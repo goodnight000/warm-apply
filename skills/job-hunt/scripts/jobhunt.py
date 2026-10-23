@@ -37,7 +37,7 @@ PRICE_ESTIMATE = {
     ("anyapi", "/linkedin.jobs"): 0.03,
     ("apify", "/harvestapi/linkedin-job-search"): 0.03,
     ("dataforseo", "/serp/google-jobs"): 0.005,
-    ("dataforseo", "/serp/google-organic"): 0.004,
+    ("dataforseo", "/serp/google-organic"): 0.02,  # billed $0.02 per query (2026-10-22)
     ("anyapi", "/glassdoor.jobs"): 0.055,  # billed per result (~$0.0052 x 10)
     ("anyapi", "/twitter.search"): 0.003,
     ("fundable", "/company"): 0.06,
@@ -236,6 +236,20 @@ def ensure_monid_key(bin_):
     return "env"
 
 
+def final_cost(bin_, run_id, env, tries=3):
+    """The run's billed cost once Monid has recorded it, or None."""
+    for i in range(tries if run_id else 0):
+        time.sleep(1.5 * (i + 1))
+        try:
+            proc = subprocess.run([bin_, "runs", "get", "-r", run_id, "-j"], capture_output=True, text=True, timeout=60, env=env)
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return None
+        value = ((parse_cli_json(proc.stdout) or {}).get("cost") or {}).get("value")
+        if value is not None:
+            return float(value)
+    return None
+
+
 class Monid:
     """Runs endpoints through the monid CLI under a per-run budget, logging every call."""
 
@@ -328,17 +342,23 @@ class Monid:
             with self.lock:
                 self.health.pop(provider, None)
                 write_json(self.home.providers_path, self.health)
-        # Monid sometimes reports no cost; in testing those runs didn't move the balance, so the ledger
-        # records $0 (flagged) to match what was billed. The reservation still guarded the budget.
-        estimated = ok and reported is None
+        # Monid fills in a run's cost a moment after it completes; ask again before falling back to the listed price.
+        estimated = False
+        if ok and reported is None:
+            final = final_cost(self.bin, record.get("runId"), env)
+            if final is None:
+                cost, estimated = est, True
+            else:
+                cost = final
         return self._record(provider, endpoint, step, ok=ok, http=http, cost=cost, error=error,
                             output=record.get("output"), run_id=record.get("runId"), reserved=est, estimated=estimated)
 
     def _record(self, provider, endpoint, step, ok, http, cost, error=None, output=None, run_id=None, reserved=0.0, estimated=False):
+        """estimated: Monid hadn't reported the cost, so the listed price is logged (`spend --reconcile` corrects it)."""
         entry = {"ts": iso(now()), "run_id": run_id, "provider": provider, "endpoint": endpoint, "purpose": self.purpose,
                  "step": step or self.purpose, "ok": ok, "http": http, "cost": round(cost, 6)}
         if estimated:
-            entry["cost_unreported"] = True  # Monid reported no cost; $0 recorded, matching the balance in testing
+            entry["estimated"] = True
         if error:
             entry["error"] = error
         with self.lock:
@@ -1928,6 +1948,21 @@ def cmd_digest(home, args):
 
 
 def cmd_spend(home, args):
+    fixed = 0
+    if args.reconcile:  # replace logged estimates with what Monid actually billed
+        env = {**os.environ, "NO_COLOR": "1"}
+        led = home.ledger()
+        for e in led:
+            if (e.get("estimated") or e.get("cost_unreported")) and e.get("run_id"):
+                final = final_cost(os.environ.get("MONID_BIN", "monid"), e["run_id"], env, tries=1)
+                if final is not None:
+                    e["cost"] = round(final, 6)
+                    e.pop("estimated", None); e.pop("cost_unreported", None)
+                    fixed += 1
+        fd, tmp = tempfile.mkstemp(dir=home.root, prefix="ledger.", suffix=".tmp")
+        with os.fdopen(fd, "w") as f:
+            f.writelines(json.dumps(e) + "\n" for e in led)
+        os.replace(tmp, home.ledger_path)
     led = home.ledger()
     by_day, by_ep, failed = {}, {}, 0
     for e in led:
@@ -1937,6 +1972,8 @@ def cmd_spend(home, args):
         by_ep[k] = round(by_ep.get(k, 0) + e["cost"], 4)
         failed += 0 if e["ok"] else 1
     return {"total_usd": round(sum(e["cost"] for e in led), 4), "calls": len(led), "failed_calls": failed,
+            **({"reconciled": fixed} if args.reconcile else {}),
+            "estimated_calls": sum(1 for e in led if e.get("estimated") or e.get("cost_unreported")),
             "by_day": by_day, "by_endpoint": dict(sorted(by_ep.items(), key=lambda kv: -kv[1]))}
 
 
@@ -2763,7 +2800,7 @@ claim in a tailored resume or note must trace back to a line here.
 
 
 # Commands that write state take the folder's lock, so a scheduled run and a manual one never overwrite each other.
-WRITES_STATE = {"init", "search", "run", "enrich", "prepare", "set", "digest", "form", "answer", "packet", "companies", "open"}
+WRITES_STATE = {"spend", "init", "search", "run", "enrich", "prepare", "set", "digest", "form", "answer", "packet", "companies", "open"}
 
 
 class StateLock:
@@ -2838,7 +2875,8 @@ def main(argv=None):
     st.add_argument("--apply-url", help="correct the job's application link (e.g. an HN post that linked the homepage)")
     d = sub.add_parser("digest", help="write the approval queue for a day")
     d.add_argument("--date")
-    sub.add_parser("spend", help="Monid spend from the ledger")
+    sp = sub.add_parser("spend", help="Monid spend from the ledger")
+    sp.add_argument("--reconcile", action="store_true", help="look up what Monid billed for calls logged at the listed price")
     fo = sub.add_parser("form", help="read the job's real application form and prefill it from answers.json")
     fo.add_argument("id")
     an = sub.add_parser("answer", help="set one form field's answer")
