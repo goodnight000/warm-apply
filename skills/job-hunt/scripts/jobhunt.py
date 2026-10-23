@@ -1905,7 +1905,9 @@ def cmd_digest(home, args):
     jobs = list(home.jobs().values())
     day = args.date or local_day()
     queue = [j for j in jobs if j.get("status") in ("shortlisted", "drafted")]
-    queue.sort(key=lambda j: (not any(w.get("verified") for w in j.get("warm_paths") or []), -(j.get("score") or 0)))
+    # Referral first: jobs with a referral note ready lead, then any verified warm path, then fit.
+    queue.sort(key=lambda j: (not (app_folder(home, j) / "referral.md").exists(),
+                              not any(w.get("verified") for w in j.get("warm_paths") or []), -(j.get("score") or 0)))
     applied = [j for j in jobs if j.get("status") == "applied"]
     stale, dead = [], []
     for j in applied:
