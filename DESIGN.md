@@ -37,7 +37,7 @@ career-ops (~76K GitHub stars) already runs inside Claude Code and Codex, scores
 | Hacker News "Who is hiring?" (Algolia) | no | free | founders' posts with salary and links |
 | Workday targets (`wday/cxs`) | no | free | big companies |
 | Recently funded companies (`fundable /deals`) | yes | ~$0.06/row, setup | targets that are likely hiring |
-| Research: ContactOut people search and enrich, Apollo, Fundable, context.dev news, AnyAPI email/verify/profile, Hunter, Ploid (fallback) | yes | ~$0.18/job | warm paths, likely hiring manager, recruiter, domain-checked email, company health |
+| Research: ContactOut people search and enrich, Apollo, Fundable, context.dev news, AnyAPI email/verify/profile, Hunter, Ploid (fallback) | yes | ~$0.10–0.20/job | warm paths, likely hiring manager, recruiter, domain-checked email, company health |
 
 Using Monid well: one key and one balance across 13 providers; calls run in parallel under a thread-safe per-run and per-day budget; cheap routes pinned where they accept the inputs (Glassdoor's flat route doesn't, so it's opt-in); providers that return auth errors are skipped for 24 hours, because Monid's health labels showed "stable" for five broken ones; Monid fills in some runs' cost a moment after they complete, so the script asks for the final cost and logs the listed price (`estimated`) only if it still isn't there (`spend --reconcile` corrects those later); logging $0 instead undercounted a real run by two thirds; and `stats.by_source` shows which sources produce shortlisted jobs and interviews, so spend follows yield.
 
@@ -81,7 +81,7 @@ Split of work: the script does everything that should be the same every run (cal
 | Target discovery | recent SF AI Series A–C rounds | Mach9 (Series A that day, 18 openings, 3 matching ML roles) | ~$0.06 per round |
 | Rerun next day | dedupe | 107 already seen, 10 new | $0.067 |
 
-These were the first measurements. After warm paths moved to ContactOut (2026-10-22), research costs about $0.18 per job (two ContactOut searches at $0.04, contact reveals at $0.026, email lookups, funding once per company). A day is about $0.20 to search plus $0.18 per prepared job, so about $1 for five.
+These were the first measurements. After warm paths moved to ContactOut (2026-10-22), research costs about $0.10–0.20 per job (two ContactOut searches at $0.04, contact reveals at $0.026, email lookups, funding once per company). A day is about $0.20 to search plus $0.18 per prepared job, so about $1 for five.
 
 ## Guardrails
 

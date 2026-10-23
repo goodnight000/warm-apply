@@ -16,7 +16,7 @@ What `jobhunt.py` calls, in order, and why. Prices are Monid's listed prices on 
 | 7 | Workday targets (`workday`) | the careers site's own `wday/cxs` JSON | free | For big companies: add `{"name", "ats": "workday", "url": "https://acme.wd5.myworkdayjobs.com/External"}` to `target_companies`. Forms aren't read; those jobs get a by-hand packet. |
 | off | Glassdoor (`glassdoor`) | `anyapi /glassdoor.jobs` | ~$0.05 per search (billed per result; the flat-priced route doesn't accept search filters) | Breadth plus Glassdoor salary estimates and company ratings. |
 
-Searches run in parallel. Each role × location pair is one LinkedIn call, plus one remote-anywhere call per role when `workplace` includes `remote` (capped at 6), up to 3 × 2 Google Jobs calls, and up to 9 `ats_web` queries. A typical run is 13–20 paid calls and $0.08–0.12.
+Searches run in parallel. Each role × location pair is one LinkedIn call, plus one remote-anywhere call per role when `workplace` includes `remote` (capped at 6), up to 3 × 2 Google Jobs calls, and up to 9 `ats_web` queries. A typical run is 13–20 paid calls and $0.25–0.40, most of it LinkedIn ($0.029 a call) and the startup-page queries ($0.02 each).
 
 ### Not used, and why (2026-10-21)
 
