@@ -49,7 +49,7 @@ It runs on macOS and Linux. On Windows, use WSL.
 ### One-off or every morning
 
 - **One-off:** say "run my job hunt" whenever you want a fresh inbox.
-- **Every morning:** say "run my job hunt every weekday at 9". The agent runs `jobhunt.py schedule --at 09:07`, which installs a launchd job on macOS or a cron job on Linux that starts your agent headless, does the full run and sends a desktop notification. On a Mac that was asleep at that time, it runs when the Mac wakes. The unattended agent may run only this skill's script, nothing else in your shell. To stop it: "stop my job hunt schedule" (`schedule --remove`).
+- **Every morning:** say "run my job hunt every weekday at 9". The agent runs `jobhunt.py schedule --at 09:07`, which installs a launchd job on macOS or a cron job on Linux that starts your agent headless and does the full run. On a Mac it sends a notification when it's done, and if the Mac was asleep at that time, it runs when it wakes. Under Claude Code the unattended agent may run only this skill's script and write only inside your job-hunt folder, because job postings are untrusted text and nobody is watching. Codex runs need its full-access mode, since its sandbox blocks the network. To stop it: "stop my job hunt schedule" (`schedule --remove`).
 - The Claude Code Desktop and Codex app scheduled tasks and GitHub Actions also work; see [scheduling.md](skills/job-hunt/references/scheduling.md).
 
 ### Claude.ai or ChatGPT (no terminal)

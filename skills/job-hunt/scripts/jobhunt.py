@@ -14,9 +14,12 @@ import os
 import re
 import subprocess
 import sys
+import shlex
 import shutil
 import tempfile
 import threading
+import time
+import traceback
 from concurrent.futures import ThreadPoolExecutor
 import urllib.error
 import urllib.parse
@@ -87,8 +90,10 @@ NO_OUTREACH_PATTERN = re.compile(
 NO_SPONSOR = re.compile(
     r"\b(unable|not able|cannot|can.t|won.t|will not|do(es)? not|are not able to)\s+(to\s+)?(currently\s+)?(provide|offer|support)?\s*"
     r"(visa\s+|immigration\s+|h-?1b\s+)?sponsor|\bno (visa |immigration )?sponsorship|without (the need for )?(current or future |now or future )?"
-    r"(visa |employer |immigration )?sponsorship|sponsorship (is )?not (available|offered|provided)", re.I)
-CITIZEN_ONLY = re.compile(r"\b(must be|only) (a )?(u\.?s\.?|united states) citizens?\b|\b(u\.?s\.?|united states) citizenship (is )?required", re.I)
+    r"(visa |employer |immigration )?sponsorship|sponsorship (is )?not (available|offered|provided)"
+    r"|not (be )?eligible for (visa |immigration )?sponsorship|must not (now or in the future )?require (visa |immigration |employer )?sponsorship", re.I)
+CITIZEN_ONLY = re.compile(r"\b(must be|only) (a )?(u\.?s\.?|united states) citizens?\b|\b(u\.?s\.?|united states) citizenship (is )?required"
+                          r"|\b(u\.?s\.?|united states) citizens? only\b", re.I)
 CLEARANCE = re.compile(r"\b(active|current)\s+(ts/sci|top secret|secret|security|dod)\s+clearance|\bclearance (is )?required"
                        r"|\bmust (hold|have|possess|obtain) (an? )?(active )?(security|ts/sci|secret) clearance|\bts/sci\b", re.I)
 YEARS = re.compile(r"(\d{1,2})\s*\+?\s*(?:(?:-|–|to)\s*\d{1,2}\s*\+?\s*)?(?:years?|yrs)\b[^.\n]{0,60}?\bexperience"
@@ -158,9 +163,10 @@ def read_json(path, default):
 
 def write_json(path, data):
     path = Path(path)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
-    tmp.replace(path)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=path.name + ".", suffix=".tmp")
+    with os.fdopen(fd, "w") as f:
+        f.write(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    os.replace(tmp, path)
 
 
 class Home:
@@ -237,8 +243,10 @@ class Monid:
         self.bin = os.environ.get("MONID_BIN", "monid")
         ensure_monid_key(self.bin)
         cfg = home.config()
-        day_left = cfg["budget"]["per_day_usd"] - home.spent_today()
+        self.per_day = cfg["budget"]["per_day_usd"]
+        day_left = self.per_day - home.spent_today()
         self.remaining = budget_usd if purpose == "setup" else max(0.0, min(budget_usd, day_left))
+        self.in_flight = 0.0
         self.skipped = []
         self.spent = 0.0
         self.calls = []
@@ -258,10 +266,13 @@ class Monid:
             return {"ok": False, "skipped": "provider marked down", "provider": provider, "endpoint": endpoint}
         est = estimate if estimate is not None else PRICE_ESTIMATE.get((provider, endpoint), 0.05)
         with self.lock:
-            if est > self.remaining + 1e-9:
+            # Another process (a scheduled run beside a manual one) may have spent since this one started.
+            day_left = float("inf") if self.purpose == "setup" else self.per_day - self.home.spent_today() - self.in_flight
+            if est > min(self.remaining, day_left) + 1e-9:
                 self.skipped.append(step or endpoint)
                 return {"ok": False, "skipped": "budget", "provider": provider, "endpoint": endpoint}
             self.remaining -= est  # reserved; reconciled in _record
+            self.in_flight += est
         cmd = [self.bin, "run", "-p", provider, "-e", endpoint, "-w", "120", "-j"]
         if body is not None:
             cmd += ["-i", json.dumps(body)]
@@ -332,6 +343,7 @@ class Monid:
         with self.lock:
             self.spent += cost
             self.remaining += reserved - cost
+            self.in_flight -= reserved
             with self.home.ledger_path.open("a") as f:
                 f.write(json.dumps(entry) + "\n")
             self.calls.append(entry)
@@ -379,8 +391,27 @@ def norm_text(s):
 
 def job_key(company, title, location=None):
     """One id per company + title: the same opening posted in several cities is one job."""
-    raw = f"{norm_text(company)}|{norm_text(title)}"
+    key = lambda s: norm_text(s) or re.sub(r"\s+", " ", (s or "").strip().lower())  # 株式会社メルカリ has no a-z0-9
+    raw = f"{key(company)}|{key(title)}"
     return hashlib.sha1(raw.encode()).hexdigest()[:10]
+
+
+# Hosts that carry other companies' pages: a link there says nothing about the employer's own domain.
+HOSTING_DOMAINS = ("ashbyhq.com", "greenhouse.io", "lever.co", "workable.com", "ycombinator.com", "workatastartup.com",
+                   "notion.site", "notion.so", "github.com", "github.io", "linkedin.com", "google.com", "forms.gle",
+                   "typeform.com", "wellfound.com", "angel.co", "breezy.hr", "bamboohr.com", "recruitee.com",
+                   "rippling.com", "myworkdayjobs.com", "smartrecruiters.com", "jobvite.com", "gem.com", "x.com",
+                   "twitter.com", "medium.com", "substack.com", "airtable.com", "tally.so", "docs.google.com",
+                   "apply.workable.com", "pinpointhq.com", "teamtailor.com", "dover.com", "jobs.gusto.com")
+
+
+def employer_domain(urls):
+    """The first link that is the employer's own site, or None (then research looks the company up by name)."""
+    for u in urls or []:
+        d = domain_of(u)
+        if d and not any(d == h or d.endswith("." + h) for h in HOSTING_DOMAINS):
+            return d
+    return None
 
 
 def domain_of(url):
@@ -620,9 +651,9 @@ def knockout(job, cand):
     text = job.get("description") or ""
     if cand.get("needs_sponsorship") and NO_SPONSOR.search(text):
         return "no visa sponsorship"
-    if cand.get("needs_sponsorship") and CITIZEN_ONLY.search(text):
+    if (cand.get("needs_sponsorship") or cand.get("us_citizen") is False) and CITIZEN_ONLY.search(text):
         return "US citizens only"
-    if norm_text(cand.get("security_clearance")) in ("", "none", "no", "n a", "na") and CLEARANCE.search(text):
+    if norm_text(str(cand.get("security_clearance") or "")) in ("", "none", "no", "n a", "na") and CLEARANCE.search(text):
         return "security clearance required"
     yrs, have = years_required(text), cand.get("years_experience")
     if yrs and isinstance(have, (int, float)) and yrs >= have + 4:
@@ -735,12 +766,29 @@ def linkedin_band(salary_min):
     return f"{bands[-1]}k+" if bands else None
 
 
+# DataForSEO location codes for Google searches; other countries go by name.
+SERP_COUNTRY = {"united states": 2840, "united kingdom": 2826, "canada": 2124, "germany": 2276, "france": 2250,
+                "india": 2356, "australia": 2036, "ireland": 2372, "netherlands": 2528, "singapore": 2702,
+                "spain": 2724, "israel": 2376}
+
+
+def user_country(cfg):
+    c = norm_text(cfg.get("_country") or "united states")
+    return {"usa": "united states", "us": "united states", "uk": "united kingdom"}.get(c, c)
+
+
+def serp_location(cfg):
+    c = user_country(cfg)
+    return {"location_code": SERP_COUNTRY[c]} if c in SERP_COUNTRY else {"location_name": c.title()}
+
+
 def search_linkedin(m, cfg):
     jobs, notes = [], []
     places = [l for l in cfg["locations"] if norm_text(l) != "remote"]
     combos = [(r, l, None) for r in cfg["roles"] for l in places]
-    if "remote" in cfg["workplace"] and not any(norm_text(l) in ("united states", "us", "usa") for l in places):
-        combos += [(r, "United States", "remote") for r in cfg["roles"]]
+    country = user_country(cfg)
+    if "remote" in cfg["workplace"] and not any(norm_text(l) in ("united states", "us", "usa", country) for l in places):
+        combos += [(r, country.title(), "remote") for r in cfg["roles"]]
     window = cfg.get("_window") or cfg["posted_within"]
     for role, loc, only in combos[:6]:
         body = {"query": role, "location": loc, "postedLimit": window if window in ("24h", "week", "month") else "week",
@@ -773,7 +821,7 @@ def search_google_jobs(m, cfg):
         for loc in cfg["locations"][:2]:
             kw = role if loc.lower() in ("united states", "remote", "usa", "us") else f"{role} {loc}"
             r = m.run("dataforseo", "/serp/google-jobs",
-                      body={"keyword": kw, "location_code": 2840, "language_code": "en", "depth": 20},
+                      body={"keyword": kw, **serp_location(cfg), "language_code": "en", "depth": 20},
                       step=f"search google jobs: {kw}")
             if r["ok"]:
                 out = r["output"] or []
@@ -794,9 +842,16 @@ TITLE_SYNONYMS = {"ml": ["machine", "learning"], "sr": ["senior"], "swe": ["soft
                   "eng": ["engineer"], "pm": ["product", "manager"], "ux": ["ux", "user", "experience"]}
 
 
+TITLE_COMPOUNDS = [(r"\bfront end\b", "frontend"), (r"\bback end\b", "backend"), (r"\bfull stack\b", "fullstack"),
+                   (r"\bdev ops\b", "devops"), (r"\bdev rel\b", "devrel")]
+
+
 def title_words(s):
     words = set()
-    for w in norm_text(s).split():
+    t = norm_text(s)
+    for pat, word in TITLE_COMPOUNDS:  # Front-End, Front End and Frontend are one word
+        t = re.sub(pat, word, t)
+    for w in t.split():
         if len(w) > 4 and w.endswith("s") and not w.endswith(("ss", "us", "ics")):
             w = w[:-1]  # designers -> designer, engineers -> engineer
         words.update(TITLE_SYNONYMS.get(w, [w]))
@@ -836,19 +891,28 @@ def place_matches(location, cfg, workplace=None):
     with an arrangement the user accepts ("New York, any arrangement, or remote anywhere")."""
     loc = norm_text(location)
     remote_ok = "remote" in cfg["workplace"]
+    us_named = re.search(r"\b(us|usa|united states|americas|north america)\b", loc)
+    abroad = NON_US.search(loc) and not us_named
     if workplace == "remote" or (not workplace and (loc.startswith("remote") or loc in ("anywhere", "work from home"))):
-        if wants_us(cfg) and NON_US.search(loc) and not re.search(r"\b(us|usa|united states|americas|north america)\b", loc):
+        if wants_us(cfg) and abroad:
+            return False
+        if not wants_us(cfg) and us_named and not NON_US.search(loc):  # "Remote (US only)" for a London user
             return False
         return remote_ok
     if not loc:
         return True
+    has = lambda name: re.search(rf"\b{re.escape(name)}\b", loc)  # "LA" isn't in "Atlanta"
     for want in cfg["locations"]:
         w = norm_text(want.split(",")[0])  # "New York, NY" matches "New York City Metropolitan Area"
         if w == "remote":
             continue
-        if w in ("united states", "us", "usa") or w in loc or any(a in loc for a in PLACE_ALIASES.get(w, [])):
+        if w in ("united states", "us", "usa"):
+            if abroad:
+                continue
             return workplace is None or workplace in cfg["workplace"]
-    if wants_us(cfg) and NON_US.search(loc) and not re.search(r"\b(us|usa|united states|americas|north america)\b", loc):
+        if has(w) or any(has(a) for a in PLACE_ALIASES.get(w, [])):
+            return workplace is None or workplace in cfg["workplace"]
+    if wants_us(cfg) and abroad:
         return False
     return remote_ok and "remote" in loc
 
@@ -935,7 +999,7 @@ def search_ats_web(m, cfg):
 
     def one(q):
         ats, kw = q
-        r = m.run("dataforseo", "/serp/google-organic", body={"keyword": kw, "location_code": 2840, "language_code": "en", "depth": 20},
+        r = m.run("dataforseo", "/serp/google-organic", body={"keyword": kw, **serp_location(cfg), "language_code": "en", "depth": 20},
                   step=f"ats web: {kw[:60]}")
         out = (r["output"] or []) if r["ok"] else []
         items = (out[0].get("items") if isinstance(out, list) and out else None) or []
@@ -1025,7 +1089,7 @@ def search_hackernews(cfg):
                 workplace="remote" if loc and re.search(r"remote", loc, re.I) and not re.search(r"hybrid|onsite", loc, re.I) else None,
                 posted_at=h.get("created_at"), description=text[:6000], url=f"https://news.ycombinator.com/item?id={h['objectID']}",
                 apply_url=links[0] if links else f"https://news.ycombinator.com/item?id={h['objectID']}",
-                company_domain=domain_of(links[0]) if links else None, sources=["hackernews"],
+                company_domain=employer_domain(links), sources=["hackernews"],
                 hiring_team=[{"name": h.get("author"), "title": "posted on Hacker News", "linkedin": None}]))
     return jobs, [f"hacker news: {thread.get('title')}"]
 
@@ -1538,6 +1602,7 @@ def cmd_search(home, args):
     cand = home.answers()
     st = home.state()
     cfg["_window"] = args.window or search_window(st.get("last_search"), cfg["posted_within"])
+    cfg["_country"] = cand.get("country")
     m = Monid(home, args.max_cost if args.max_cost is not None else cfg["budget"]["per_run_usd"], "search")
     runners = {"linkedin": lambda: search_linkedin(m, cfg), "google_jobs": lambda: search_google_jobs(m, cfg),
                "ats_boards": lambda: search_ats(cfg), "ats_web": lambda: search_ats_web(m, cfg),
@@ -1567,9 +1632,26 @@ def cmd_search(home, args):
     new, updated, filtered = [], 0, []
     for jid, j in batch.items():
         if jid in jobs:
-            jobs[jid] = merge(jobs[jid], j)
-            jobs[jid]["last_seen"] = iso(at)
+            old = dict(jobs[jid])  # merge() updates in place
+            merged = merge(jobs[jid], j)
+            merged["last_seen"] = iso(at)
+            jobs[jid] = merged
             updated += 1
+            changed = (merged.get("location") != old.get("location")
+                       or len(merged.get("description") or "") > len(old.get("description") or ""))
+            if changed and old.get("status") in ("filtered", "new"):
+                # Seen again in another city, or now with a description: judge it again.
+                reason = filter_reason(merged, cfg, cand)
+                if reason:
+                    if old.get("status") == "new":
+                        merged["status"], merged["filtered_reason"] = "filtered", reason
+                        filtered.append({"company": merged["company"], "title": merged["title"], "reason": reason})
+                else:
+                    merged["score"], merged["score_reasons"] = score(merged, cfg, at, cand)
+                    if old.get("status") == "filtered":
+                        merged["status"] = "new"
+                        merged.pop("filtered_reason", None)
+                        new.append(merged)
             continue
         j["first_seen"] = j["last_seen"] = iso(at)
         reason = filter_reason(j, cfg, cand)
@@ -1582,7 +1664,8 @@ def cmd_search(home, args):
             new.append(j)
         jobs[jid] = j
     home.save_jobs(jobs)
-    if found:
+    complete = not m.skipped and not any(not c["ok"] for c in m.calls)
+    if found and complete:  # a failed or budget-skipped search is retried over the same window next time
         st["last_search"] = iso(at)
         home.save_state(st)
     new.sort(key=lambda j: -j["score"])
@@ -1635,6 +1718,8 @@ COMPANY_LOCK = threading.Lock()
 
 def enrich_job(home, m, j, cfg):
     before = sum(c["cost"] for c in m.calls)
+    if j.get("company_domain") and not employer_domain([j["company_domain"]]):
+        j["company_domain"] = None  # a job board's or host's domain; research finds the company by name
     no_dm = NO_OUTREACH_PATTERN.search(j.get("description") or "")
     j["outreach_ok"] = not no_dm
     if no_dm:
@@ -2018,8 +2103,12 @@ def cmd_lint(home, args):
     jobs, jid = get_job(home, args.id)
     j, cfg, cand = jobs[jid], home.config(), home.answers()
     folder = app_folder(home, j)
-    sources = norm_num(" ".join([(home.root / "profile.md").read_text() if (home.root / "profile.md").exists() else "",
-                                 j.get("description") or "", json.dumps(cand)]))
+    source_text = " ".join([(home.root / "profile.md").read_text() if (home.root / "profile.md").exists() else "",
+                            j.get("description") or "",
+                            json.dumps({k: v for k, v in cand.items() if k not in ("phone", "location")})])
+    found = {norm_num(n) for n in NUMBER.findall(URL.sub(" ", source_text))}
+    # Whole numbers only: "55%" isn't traceable to a phone number containing 555.
+    sources = found | {re.sub(r"[^0-9.]", "", v) for v in found}
     errors, warnings = [], []
     limits = {"referral.md": ("chars", 400), "email.md": ("words", 150), "note.md": ("words", 180)}
     for name in ("resume.md", "note.md", "email.md", "referral.md"):
@@ -2112,14 +2201,18 @@ def cmd_packet(home, args):
         home.save_jobs(jobs_now)
         j = jobs_now[jid]
     summ = forms.summary(app["fields"]) if app else None
-    ready = bool(app) and lint["ok"] and all(d.get("pdf") for d in docs.values()) and "resume" in docs
+    # A job without a readable form (Workday, LinkedIn-only, a plain link) is ready by hand: PDFs and drafts done.
+    blocking = (lint["errors"] + (["resume.md is missing"] if "resume" not in docs else [])
+                + [f"{k} PDF didn't render: {d.get('note') or 'install Chrome'}" for k, d in docs.items() if not d.get("pdf")])
+    ready = not blocking
     if ready and j.get("status") in ("new", "saved", "shortlisted"):
         jobs = home.jobs()
         jobs[jid].setdefault("history", []).append({"ts": iso(now()), "from": jobs[jid].get("status"), "to": "drafted", "note": "packet ready"})
         jobs[jid]["status"] = "drafted"
         home.save_jobs(jobs)
     required_for_user = [f["label"][:80] for f in (app or {}).get("fields", []) if f["required"] and f["status"] == forms.USER]
-    return {"id": jid, "ready": ready, "apply_url": (app or {}).get("apply_url") or j.get("apply_url"),
+    return {"id": jid, "ready": ready, "blocking": blocking, "by_hand": not app,
+            "apply_url": (app or {}).get("apply_url") or j.get("apply_url"),
             "documents": docs, "form": summ, "lint": lint, "for_you": (summ or {}).get("for_user", []),
             "required_for_user": required_for_user,
             "meaning": "ready = everything the agent can do is done; required_for_user must be answered by the user before submitting",
@@ -2251,14 +2344,24 @@ def cmd_prepare(home, args):
     jobs = home.jobs()
     ids = [get_job(home, raw)[1] for raw in args.ids]
 
+    save_lock = threading.Lock()
+
     def one(jid):
         j = jobs[jid]
+        research_error = None
         if not j.get("enriched_at") or args.refresh:
-            enrich_job(home, m, j, cfg)
+            try:
+                enrich_job(home, m, j, cfg)
+            except Fail as e:  # BLOCKED or a rejected key: keep what was found, report it
+                research_error = f"{e.error} {e.hint}"
+            except Exception as e:
+                research_error = f"research failed: {type(e).__name__}: {str(e)[:120]}"
         try:
             f = form_job(home, j, cand)
         except Exception as e:
             f = {"form": None, "note": f"form read failed: {type(e).__name__}"}
+        with save_lock:  # paid research is kept even if a later job fails
+            home.save_jobs(jobs)
         have = cand.get("years_experience")
         return {"id": jid, "company": j["company"], "title": j["title"], "folder": str(app_folder(home, j)),
                 "apply_url": f.get("apply_url") or j.get("apply_url"), "ats": f.get("ats"),
@@ -2267,7 +2370,8 @@ def cmd_prepare(home, args):
                 "contact": mask_contact(j.get("contact")), "hiring_manager": mask_contact(j.get("hiring_manager")), "warm_paths": [
                     {k: w.get(k) for k in ("name", "headline", "shared", "verified", "same_function", "linkedin")} for w in j.get("warm_paths") or []],
                 "outreach_ok": j.get("outreach_ok"), "ai_screening": j.get("ai_screening"),
-                "fit": {"skills_matched": j.get("skills_matched"), "years_required": j.get("years_required"), "you_have": have}}
+                "fit": {"skills_matched": j.get("skills_matched"), "years_required": j.get("years_required"), "you_have": have},
+                **({"research_error": research_error} if research_error else {})}
 
     with ThreadPoolExecutor(min(4, len(ids)) or 1) as ex:
         out = list(ex.map(one, ids))
@@ -2426,27 +2530,28 @@ SCHEDULE_PROMPT = ("Use the job-hunt skill to do today's daily run, all five ste
 
 
 def schedule_wrapper(home, agent_bin, agent, script):
-    """The script launchd or cron runs: the agent's daily run, then a desktop notification."""
+    """The script launchd or cron runs: the agent's daily run, then a desktop notification (macOS)."""
     prompt = SCHEDULE_PROMPT.format(script=script, home=home.root)
     if agent == "claude":
-        # Only this skill's script may run in the shell: postings are untrusted text read by an unattended agent.
+        # Postings are untrusted text read by an agent nobody is watching: the shell may run only this skill's
+        # script, and files may be written only inside the state folder.
         cmd = [agent_bin, "-p", prompt, "--permission-mode", "dontAsk", "--allowedTools",
-               f"Bash(python3 {script}:*)", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]
+               f"Bash(python3 {script}:*)", "Read", "Glob", "Grep", "Skill",
+               f"Write(/{home.root}/**)", f"Edit(/{home.root}/**)"]
     else:
-        # Codex needs network for Monid; workspace-write blocks it.
+        # Codex needs network for Monid, which its workspace-write sandbox blocks.
         cmd = [agent_bin, "exec", "--skip-git-repo-check", "-s", "danger-full-access", "-C", str(home.root.parent), prompt]
-    quoted = " ".join("'" + c.replace("'", "'\\''") + "'" for c in cmd)
+    log = home.root / "schedule.log"
+    notify = ""
     if sys.platform == "darwin":
-        notify = ("osascript -e \"display notification \\\"$msg\\\" with title \\\"Job hunt\\\"\" "
-                  ">/dev/null 2>&1")
-    else:
-        notify = "command -v notify-send >/dev/null 2>&1 && notify-send 'Job hunt' \"$msg\""
+        notify = ("osascript -e \"display notification \\\"$msg\\\" with title \\\"Job hunt\\\"\" >/dev/null 2>&1")
     return f"""#!/bin/sh
 # Daily job-hunt run, installed by `jobhunt.py schedule`. Rerun that command to change it, or `--remove`.
-cd '{home.root.parent}' || exit 1
+export JH_SCHEDULED_RUN=1
+cd {shlex.quote(str(home.root.parent))} || exit 1
 echo "=== $(date)"
-{quoted}
-if [ $? -eq 0 ]; then msg="Today's applications are ready in inbox.html"; else msg="The daily run failed; see {home.root / 'schedule.log'}"; fi
+{" ".join(shlex.quote(c) for c in cmd)}
+if [ $? -eq 0 ]; then msg="Today's applications are ready in inbox.html"; else msg={shlex.quote("The daily run failed; see " + str(log))}; fi
 {notify}
 """
 
@@ -2482,7 +2587,11 @@ def launchd_plist(wrapper, log, path_env, home, hour, minute, weekdays):
 
 
 def cmd_schedule(home, args):
+    if os.environ.get("JH_SCHEDULED_RUN"):
+        raise Fail("A scheduled run can't change the schedule.", "Ask the user to run `schedule` themselves.")
     plist = Path.home() / "Library/LaunchAgents" / f"{SCHEDULE_LABEL}.plist"
+    # Outside the state folder, read-only: the unattended agent writes in JH_HOME and must not edit what launchd runs.
+    wrapper = Path.home() / ".local/share/warm-apply/scheduled-run.sh"
     marker = "# job-hunt daily run"
     mac = sys.platform == "darwin"
     if os.name == "nt":
@@ -2497,6 +2606,7 @@ def cmd_schedule(home, args):
         subprocess.run(["crontab", "-"], input=text, text=True, check=True, capture_output=True)
 
     if args.remove:
+        wrapper.unlink(missing_ok=True)
         if mac:
             subprocess.run(["launchctl", "bootout", f"gui/{os.getuid()}", str(plist)], capture_output=True)
             existed = plist.exists()
@@ -2518,12 +2628,11 @@ def cmd_schedule(home, args):
     if not monid_bin:
         raise Fail("The monid CLI is not installed.", "npm install -g @monid-ai/cli")
     script = Path(__file__).resolve()
-    wrapper = home.root / "scheduled-run.sh"
     log = home.root / "schedule.log"
     path_env = schedule_path_env([agent_bin, monid_bin, shutil.which("node"), sys.executable, shutil.which("python3")])
     weekdays = [1, 2, 3, 4, 5] if args.days == "weekdays" else [0, 1, 2, 3, 4, 5, 6]
     out = {"agent": args.agent, "at": f"{hour:02d}:{minute:02d}", "days": args.days, "wrapper": str(wrapper),
-           "log": str(log), "run_now": f"sh '{wrapper}'"}
+           "log": str(log), "run_now": f"sh {shlex.quote(str(wrapper))} >> {shlex.quote(str(log))} 2>&1"}
     wrapper_text = schedule_wrapper(home, agent_bin, args.agent, script)
     if mac:
         unit = launchd_plist(wrapper, log, path_env, home, hour, minute, weekdays)
@@ -2531,14 +2640,18 @@ def cmd_schedule(home, args):
                    note="Runs while you're logged in; if the Mac was asleep at that time, it runs when it wakes.")
     else:
         dow = "1-5" if args.days == "weekdays" else "*"
-        unit = (f"{minute} {hour} * * {dow} PATH='{path_env}' JOB_HUNT_HOME='{home.root}' "
-                f"/bin/sh '{wrapper}' >> '{log}' 2>&1 {marker}")
+        q = lambda v: shlex.quote(str(v)).replace("%", "\\%")  # cron reads a bare % as a newline
+        unit = (f"{minute} {hour} * * {dow} PATH={q(path_env)} JOB_HUNT_HOME={q(home.root)} "
+                f"/bin/sh {q(wrapper)} >> {q(log)} 2>&1 {marker}")
         out.update(kind="cron", line=unit, note="Runs only if the machine is on at that time.")
     if args.dry_run:
         out.update(dry_run=True, wrapper_text=wrapper_text, unit_text=unit)
         return out
+    wrapper.parent.mkdir(parents=True, exist_ok=True)
+    if wrapper.exists():
+        wrapper.chmod(0o755)
     wrapper.write_text(wrapper_text)
-    wrapper.chmod(0o755)
+    wrapper.chmod(0o555)
     if mac:
         plist.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(["launchctl", "bootout", f"gui/{os.getuid()}", str(plist)], capture_output=True)
@@ -2558,7 +2671,7 @@ ANSWERS_TEMPLATE = {
     "first_name": "", "last_name": "", "preferred_name": "", "email": "", "phone": "",
     "location": "City, ST", "country": "United States", "linkedin": "", "github": "", "website": "",
     "current_company": "", "current_title": "", "years_experience": None,
-    "work_authorized": True, "needs_sponsorship": False, "security_clearance": "",
+    "work_authorized": True, "needs_sponsorship": False, "us_citizen": None, "security_clearance": "",
     "willing_to_relocate": False, "in_office_ok": True, "earliest_start": "2 weeks after an offer",
     "salary_expectation": "", "pronouns": "", "how_heard_default": "Company website",
     "self_id": {"gender": "decline", "race": "decline", "veteran": "decline", "disability": "decline"},
@@ -2589,6 +2702,40 @@ claim in a tailored resume or note must trace back to a line here.
 ## Dealbreakers and preferences
 """,
 }
+
+
+# Commands that write state take the folder's lock, so a scheduled run and a manual one never overwrite each other.
+WRITES_STATE = {"init", "search", "run", "enrich", "prepare", "set", "digest", "form", "answer", "packet", "companies", "open"}
+
+
+class StateLock:
+    def __init__(self, root):
+        self.path, self.f = Path(root) / ".lock", None
+
+    def __enter__(self):
+        try:
+            import fcntl
+        except ImportError:  # Windows: no lock
+            return self
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.f = open(self.path, "w")
+        waited = 0
+        while True:
+            try:
+                fcntl.flock(self.f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                return self
+            except BlockingIOError:
+                if waited == 0:
+                    print("Another job-hunt command is running (maybe the scheduled run); waiting for it.", file=sys.stderr)
+                if waited >= 1800:
+                    raise Fail("Another job-hunt command has held the folder for 30 minutes.",
+                               f"Check for a stuck run (schedule.log), then rerun.")
+                time.sleep(2)
+                waited += 2
+
+    def __exit__(self, *exc):
+        if self.f:
+            self.f.close()
 
 
 def default_home():
@@ -2679,10 +2826,20 @@ def main(argv=None):
               "schedule": cmd_schedule}[args.cmd]
         if args.cmd != "init":
             home.require()
-        print(json.dumps(fn(home, args), indent=2, ensure_ascii=False, default=str))
+        if args.cmd in WRITES_STATE:
+            with StateLock(home.root):
+                out = fn(home, args)
+        else:
+            out = fn(home, args)
+        print(json.dumps(out, indent=2, ensure_ascii=False, default=str))
         return 0
     except Fail as f:
         print(json.dumps({"error": f.error, "hint": f.hint}, indent=2))
+        return 1
+    except Exception as e:  # still JSON, so the agent can read it; the traceback goes to stderr
+        traceback.print_exc()
+        print(json.dumps({"error": f"{type(e).__name__}: {str(e)[:300]}",
+                          "hint": "Unexpected error in jobhunt.py; rerun once, and if it repeats, skip this step and tell the user."}, indent=2))
         return 1
 
 

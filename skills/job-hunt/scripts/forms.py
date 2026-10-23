@@ -67,11 +67,18 @@ def detect(url):
     return None
 
 
+# Words that don't change which company a name means ("Anthropic PBC", "Ramp Inc"). A first word alone is tried
+# as a board slug only when the rest are these, so "Mercury Insurance" never lands on Mercury's (the bank's) board.
+NAME_SUFFIXES = {"inc", "llc", "ltd", "limited", "pbc", "corp", "corporation", "co", "company", "hq", "gmbh", "sa",
+                 "technologies", "technology", "tech", "labs", "lab", "ai", "app", "io", "group", "holdings", "the"}
+
+
 def slug_candidates(company, domain=None):
     base = norm(company)
     words = base.split()
+    first = words[0] if words and all(w in NAME_SUFFIXES for w in words[1:]) else ""
     out = []
-    for c in ["".join(words), "-".join(words), words[0] if words else "",
+    for c in ["".join(words), "-".join(words), first,
               (domain or "").split(".")[0] if domain else ""]:
         if c and c not in out:
             out.append(c)
@@ -334,8 +341,12 @@ def pick(options, answer):
     for o in options:
         if norm(o) == a:
             return o
+    if a in ("yes", "no"):
+        # "Yes, now" or "No, I won't" only; "I will not require…" or "Not now, but…" go to the user.
+        hits = [o for o in options if re.match(a + r"\b", norm(o))]
+        return hits[0] if len(hits) == 1 else None
     for o in options:
-        if norm(o).startswith(a) or (a and a in norm(o)):
+        if a and re.search(r"\b" + re.escape(a) + r"\b", norm(o)):
             return o
     return None
 
@@ -358,6 +369,39 @@ def lives_in(question, location):
     return "Yes" if any(n in loc for n in names) else None
 
 
+COUNTRIES = {
+    "united states": r"united states|\bu\.?s\.?a?\b|\bamerica\b",
+    "united kingdom": r"united kingdom|\bu\.?k\.?\b|britain|england",
+    "canada": r"canad", "germany": r"german", "france": r"\bfrance\b", "india": r"\bindia\b",
+    "ireland": r"ireland", "netherlands": r"netherlands", "australia": r"australia", "singapore": r"singapore",
+    "spain": r"\bspain\b", "israel": r"israel", "japan": r"japan", "european union": r"\beu\b|european union",
+}
+
+
+def same_country(question, country):
+    """False when the question names a country and it isn't the user's: their yes/no on work authorization
+    is about their own country."""
+    named = [c for c, pat in COUNTRIES.items() if re.search(pat, question or "", re.I)]
+    if not named:
+        return True
+    mine = norm(country or "united states")
+    mine = {"usa": "united states", "us": "united states", "uk": "united kingdom"}.get(mine, mine)
+    return mine in named
+
+
+def work_auth(a, question):
+    if not same_country(question, a.get("country")):
+        return None
+    q = question or ""
+    if re.search(r"without (the )?(need (for|of) |requiring )?(an? )?(employer |visa )?sponsor", q, re.I):
+        if a.get("work_authorized") is None or a.get("needs_sponsorship") is None:
+            return None
+        return yes_no(bool(a["work_authorized"]) and not a["needs_sponsorship"])
+    if re.search(r"sponsor", q, re.I):
+        return yes_no(a.get("needs_sponsorship"))
+    return yes_no(a.get("work_authorized"))
+
+
 DECLINE = re.compile(r"decline|don.?t wish|do not wish|prefer not|not to (say|answer|disclose)|don.?t want|do not want", re.I)
 
 
@@ -370,11 +414,11 @@ def rules(a, job):
     out = [
         (r"^(legal )?first name|given name", first),
         (r"^(legal )?last name|family name|surname", last),
-        (r"^(full |legal )?name\b(?!.*(prefer|pronoun))|^full name|^legal name", f"{first} {last}".strip()),
+        (r"^\s*(your )?(full |legal )*name\s*[*:]?\s*$|^(full|legal) name\b(?!.*(prefer|pronoun))", f"{first} {last}".strip()),
         (r"preferred (first )?name.*last name|what is your preferred first name and last", f"{a.get('preferred_name') or first} {last}".strip()),
         (r"preferred (first )?name|name you go by|what is your preferred", a.get("preferred_name") or first),
         (r"e-?mail", a.get("email")),
-        (r"phone|mobile", a.get("phone")),
+        (r"\bphone\b|^\s*(mobile|cell)( number)?\s*[*:]?\s*$|(mobile|cell) number", a.get("phone")),
         (r"linkedin", a.get("linkedin")),
         (r"github", a.get("github") or a.get("website")),
         (r"portfolio|website|personal (site|url)|other (website|url|link)|dribbble|behance", a.get("website") or a.get("github")),
@@ -383,15 +427,18 @@ def rules(a, job):
         (r"which country|country (of residence|where you|will you)|country.*(based|reside|live)", a.get("country")),
         (r"current (company|employer)|^company$|^organization$|most recent (company|employer)", a.get("current_company")),
         (r"current (job )?title|current role", a.get("current_title")),
-        (r"sponsor", yes_no(a.get("needs_sponsorship"))),
-        (r"authori[sz]ed to work|work authori[sz]ation|legally (authorized|eligible|able)|eligible to work|right to work", yes_no(a.get("work_authorized"))),
+        (r"sponsor|authori[sz]ed to work|work authori[sz]ation|legally (authorized|eligible|able)|eligible to work|right to work",
+         work_auth(a, job.get("_question"))),
         (r"(based|located|live|living|reside|residing) (in|near)", lives_in(job.get("_question"), a.get("location"))
          or (yes_no(a.get("willing_to_relocate")) if re.search(r"relocat", job.get("_question") or "", re.I) else None)),
         (r"relocat", yes_no(a.get("willing_to_relocate"))),
         (r"(in[- ]person|on-?site|in (the|our|one of our) offices?|from (our|the) .*office|hybrid).*(days|week|time|%)|commute", yes_no(a.get("in_office_ok"))),
         (r"(earliest|when).*(start)|start date|notice period|availability to start", a.get("earliest_start")),
         (r"salary|compensation|pay (expectation|range|requirement)|desired pay", a.get("salary_expectation") or None),
-        (r"years of (\w+ )?experience|how many years", a.get("years_experience")),
+        # Only total experience; "years of Python experience" is for the user or a draft (drafting.md).
+        (r"^\s*(total )?years of (professional |work |relevant |industry |software )?experience\s*[*:?]?\s*$"
+         r"|how many (total )?years of (professional |work |relevant |industry )?(work )?experience (do )?you have\s*\??\s*$",
+         a.get("years_experience")),
         (r"pronoun", a.get("pronouns") or None),
         (r"how did you (hear|find|learn)|where did you (hear|see|find)|referral source|^source$", via),
     ]

@@ -34,7 +34,7 @@ Open the company's careers page and read the job link:
 | `jobs.lever.co/X` | `lever` | `X` |
 | `jobs.ashbyhq.com/X` | `ashby` | `X` |
 
-Add `{"name": "Anthropic", "ats": "greenhouse", "slug": "anthropic", "domain": "anthropic.com"}` to `target_companies`. Check it with `curl -s https://boards-api.greenhouse.io/v1/boards/SLUG/jobs | head -c 200` (Lever: `https://api.lever.co/v0/postings/SLUG?mode=json`; Ashby: `https://api.ashbyhq.com/posting-api/job-board/SLUG`). Ashby returns `{"jobs":[]}` with HTTP 200 for any slug, including companies not on Ashby, so an empty Ashby board is a wrong slug, not a company with no openings. Workday and other systems aren't read directly; their jobs reach the pipeline through LinkedIn and Google Jobs. A bare company name in `target_companies` still boosts that company's score.
+Add `{"name": "Anthropic", "ats": "greenhouse", "slug": "anthropic", "domain": "anthropic.com"}` to `target_companies`. Check it with `curl -s https://boards-api.greenhouse.io/v1/boards/SLUG/jobs | head -c 200` (Lever: `https://api.lever.co/v0/postings/SLUG?mode=json`; Ashby: `https://api.ashbyhq.com/posting-api/job-board/SLUG`). Ashby returns `{"jobs":[]}` with HTTP 200 for any slug, including companies not on Ashby, so an empty Ashby board is a wrong slug, not a company with no openings. Workday boards are read when added as a target with their careers-site URL (row 7). Other systems (iCIMS, SmartRecruiters, ADP and the rest) aren't read directly; their jobs reach the pipeline through LinkedIn and Google Jobs. A bare company name in `target_companies` still boosts that company's score.
 
 ## Research for a shortlisted job
 

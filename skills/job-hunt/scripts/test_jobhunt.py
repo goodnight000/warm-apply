@@ -625,12 +625,77 @@ class Round4(unittest.TestCase):
         self.assertEqual(out["at"], "09:07")
         script = str((HERE / "jobhunt.py").resolve())
         self.assertIn(f"'Bash(python3 {script}:*)'", out["wrapper_text"])
-        self.assertIn("'dontAsk'", out["wrapper_text"])
+        self.assertIn("--permission-mode dontAsk", out["wrapper_text"])
+        self.assertIn(f"'Write(/{self.home.resolve()}/**)'", out["wrapper_text"])
+        self.assertIn("JH_SCHEDULED_RUN=1", out["wrapper_text"])
+        self.assertNotIn(str(self.home), out["wrapper"])  # what launchd runs lives outside the folder the agent writes
         self.assertIn(str(bindir), out["unit_text"])  # launchd/cron get the folder the agent was found in
         self.assertIn(str(self.home.resolve()), out["unit_text"])
         self.assertFalse((self.home / "scheduled-run.sh").exists())
         code, out = cli(self.home, "schedule", "--at", "25:00", "--dry-run", env={"PATH": f"{bindir}:{os.environ['PATH']}"})
         self.assertEqual(code, 1)
+        code, out = cli(self.home, "schedule", "--dry-run", env={"PATH": f"{bindir}:{os.environ['PATH']}", "JH_SCHEDULED_RUN": "1"})
+        self.assertEqual(code, 1)  # a scheduled run can't reschedule itself
+
+
+class Round5(unittest.TestCase):
+    """Defects found in the pre-publication review."""
+
+    A = {"first_name": "Priya", "last_name": "Nair", "phone": "(555) 010-0142", "work_authorized": True,
+         "needs_sponsorship": False, "country": "United States", "years_experience": 4, "current_company": "Datadog"}
+
+    def answer(self, label, options=None, a=None):
+        f = [{"label": label, "key": "q", "type": "select" if options else "text", "options": options or [],
+              "required": True, "section": "main"}]
+        forms.prefill(f, a or self.A, {}, {})
+        return f[0].get("answer")
+
+    def test_work_authorization_with_sponsorship_wording(self):
+        self.assertEqual(self.answer("Are you legally authorized to work in the United States without the need for employer sponsorship?"), "Yes")
+        self.assertEqual(self.answer("Will you now or in the future require visa sponsorship?"), "No")
+        self.assertIsNone(self.answer("Are you legally authorized to work in the United Kingdom?"))
+        self.assertIsNone(self.answer("Will you require sponsorship?", ["I will require sponsorship now", "I will not require sponsorship"]))
+        self.assertEqual(self.answer("Will you require sponsorship?", ["Yes, now", "Yes, in the future", "No"]), "No")
+
+    def test_name_phone_and_years_rules_stay_narrow(self):
+        self.assertNotEqual(self.answer("Name of referrer"), "Priya Nair")
+        self.assertNotEqual(self.answer("Describe your mobile development experience"), self.A["phone"])
+        self.assertIsNone(self.answer("How many years of Python experience do you have?"))
+        self.assertEqual(self.answer("Full name"), "Priya Nair")
+        self.assertEqual(self.answer("Phone number"), self.A["phone"])
+        self.assertEqual(self.answer("Name of current employer"), "Datadog")
+
+    def test_first_word_slug_only_for_suffixes(self):
+        self.assertNotIn("mercury", forms.slug_candidates("Mercury Insurance"))
+        self.assertIn("anthropic", forms.slug_candidates("Anthropic PBC"))
+
+    def test_us_wide_location_drops_onsite_abroad(self):
+        cfg = {**jobhunt.DEFAULT_CONFIG, "locations": ["United States"], "workplace": ["onsite", "hybrid", "remote"]}
+        self.assertFalse(jobhunt.place_matches("London, England, United Kingdom", cfg))
+        self.assertFalse(jobhunt.place_matches("Bengaluru, India", cfg, "onsite"))
+        self.assertTrue(jobhunt.place_matches("Austin, TX", cfg))
+        la = {**cfg, "locations": ["LA"]}
+        self.assertFalse(jobhunt.place_matches("Atlanta, GA", la))
+        london = {**cfg, "locations": ["London"]}
+        self.assertFalse(jobhunt.place_matches("Remote (US only)", london, "remote"))
+
+    def test_compound_titles_match(self):
+        self.assertTrue(jobhunt.role_matches("Senior Front-End Engineer", ["frontend engineer"]))
+        self.assertTrue(jobhunt.role_matches("Full Stack Developer", ["fullstack engineer"]) or
+                        jobhunt.role_matches("Full Stack Engineer", ["full-stack engineer"]))
+
+    def test_hosting_links_are_not_the_employer(self):
+        self.assertIsNone(jobhunt.employer_domain(["https://jobs.ashbyhq.com/acme/123", "https://omega.notion.site/jobs"]))
+        self.assertEqual(jobhunt.employer_domain(["https://www.ycombinator.com/companies/acme", "https://acme.dev/careers"]), "acme.dev")
+
+    def test_knockouts_and_clearance_flag(self):
+        cand = {"needs_sponsorship": True}
+        self.assertTrue(jobhunt.knockout({"description": "Candidates must not require visa sponsorship now or in the future."}, cand))
+        self.assertTrue(jobhunt.knockout({"description": "This role is open to US citizens only."}, {"us_citizen": False}))
+        self.assertIsNone(jobhunt.knockout({"description": "Python."}, {"security_clearance": True}))
+
+    def test_non_latin_names_get_distinct_ids(self):
+        self.assertNotEqual(jobhunt.job_key("株式会社メルカリ", "ソフトウェアエンジニア"), jobhunt.job_key("楽天グループ株式会社", "ソフトウェアエンジニア"))
 
 
 if __name__ == "__main__":

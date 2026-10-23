@@ -17,12 +17,12 @@ Ask two things: what time (default 09:07 local; an odd minute avoids the top-of-
 JH schedule --at 09:07 --days weekdays            # --agent codex for Codex; --days daily for every day
 ```
 
-It writes `JH_HOME/scheduled-run.sh` and installs it with launchd on macOS (`~/Library/LaunchAgents/com.warm-apply.job-hunt.plist`) or cron on Linux. The script starts your agent CLI headless in the folder holding `JH_HOME`, with the daily-run prompt, then posts a desktop notification. It pins the absolute paths of the agent, `monid` and Python, because launchd and cron start with a bare PATH that misses nvm, Homebrew and `~/.local/bin`.
+It writes a read-only `~/.local/share/warm-apply/scheduled-run.sh`, kept outside `JH_HOME` so the unattended agent can't edit what runs tomorrow, and installs it with launchd on macOS (`~/Library/LaunchAgents/com.warm-apply.job-hunt.plist`) or cron on Linux. The script starts your agent CLI headless in the folder holding `JH_HOME`, with the daily-run prompt; on macOS it then posts a notification. Output goes to `JH_HOME/schedule.log`. It pins the absolute paths of the agent, `monid` and Python, because launchd and cron start with a bare PATH that misses nvm, Homebrew and `~/.local/bin`.
 
-- Claude Code runs with `--permission-mode dontAsk` and may use only the Read, Write, Edit, Glob, Grep and Skill tools, plus the shell for this skill's `jobhunt.py`. Postings are untrusted text read by an agent nobody is watching, so it can't run anything else.
-- Codex runs `codex exec -s danger-full-access`, because its workspace-write sandbox blocks the network Monid needs.
+- Claude Code runs with `--permission-mode dontAsk`. It may read anything, write and edit only inside `JH_HOME`, and run only this skill's `jobhunt.py` in the shell. Postings are untrusted text read by an agent nobody is watching. A scheduled run can't change the schedule (`schedule` refuses under `JH_SCHEDULED_RUN`).
+- Codex runs `codex exec -s danger-full-access`, because its workspace-write sandbox blocks the network Monid needs. That's broader than the Claude Code setup; tell the user.
 
-After installing, run it once while the user watches: the `run_now` command it prints. Check `JH_HOME/schedule.log`; on macOS, the first run may ask for permission to show notifications. Run `--dry-run` to see what would be installed, rerun with a new `--at` to change the time, and `--remove` to stop.
+After installing, run it once while the user watches: the `run_now` command it prints. Check `JH_HOME/schedule.log`; on macOS, the first run may ask for permission to show notifications. Commands that change state wait for each other, so a scheduled run and a manual one can overlap safely. Run `--dry-run` to see what would be installed, rerun with a new `--at` to change the time, and `--remove` to stop.
 
 ## Claude Code Desktop
 
