@@ -1,8 +1,10 @@
 # Drafting
 
+Drafts go in the job's folder, `JH_HOME/applications/<company>-<title>-<id>/` (the `folder` in `prepare`'s output), next to `job.md` and `apply.md`.
+
 Every draft is built from two inputs only: the posting (`job.md`) and the facts inventory (`profile.md`). A claim is **traceable** when you can point to the line in `profile.md` it came from; a draft is done when every claim is. Rewording, reordering, choosing which facts to lead with, and mirroring the posting's vocabulary for skills the user actually has are all fair. A number, title, date, tool or outcome that isn't in `profile.md` stays out, however well it would fit; it goes under "Gaps" in `job.md` as a question for the user instead.
 
-Write in the user's voice: plain, specific, first person, no filler openers ("I am writing to express…", "I hope this finds you well"), no superlatives about themselves. `JH lint ID` checks the mechanical part: every number must appear in `profile.md`, the posting or `answers.json`; length limits; filler; placeholders.
+Write in the user's voice: plain, specific, first person, no filler openers ("I am writing to express…", "I hope this finds you well"), no superlatives about themselves. `JH lint ID` checks the mechanical part: every number, and counts like "12 engineers", must appear in `profile.md`, the posting or `answers.json`; a tool in `resume.md` must be in `profile.md`; employers it can't find are flagged; length limits; filler; placeholders. It can't judge wording like "through performance profiling": check every phrase yourself.
 
 If the form has an AI-policy question (`apply.md` warns about it), the employer may restrict AI-written answers. Keep drafted answers short and factual, and tell the user to read the policy and rewrite in their own words where it asks.
 
@@ -16,7 +18,7 @@ If the form has an AI-policy question (`apply.md` warns about it), the employer 
 
 ## note.md (cover note)
 
-Only when the form has a cover letter field (it's in `apply.md`; for forms `JH form` couldn't read, put `<!-- use only if the form asks for a cover letter -->` on the first line). `JH packet` renders it to a PDF for file fields and pastes it into text fields. Under 150 words, three short paragraphs:
+Only when the form has a cover letter field (it's in `apply.md`; for forms `JH form` couldn't read, put `<!-- use only if the form asks for a cover letter -->` on the first line). `JH packet` renders it to a PDF for file fields and pastes it into text fields. Under 150 words (lint blocks over 180), three short paragraphs:
 
 1. The role and one specific reason this company (from `job.md`: product, news, funding round, team).
 2. The one or two facts from `profile.md` that best match the posting's top requirement, with numbers.
@@ -36,7 +38,7 @@ Warm paths are keyword matches; tell the user to confirm the shared history on t
 
 Skip it when `job.md` has a "Careers page only" section: the employer asked candidates not to send resumes or interest by email or social media, and ignoring that hurts the application. Write `referral.md` in that case only if the user personally knows the warm path.
 
-To the likely hiring manager in `job.md` when they have an email (they own the role; a short note from a qualified candidate is easy for them to forward). When the hiring manager has no email, write them a LinkedIn connection note under 300 characters instead, and send `email.md` to the recruiter. One email per company. Subject under 8 words, specific ("AI platform engineer: built X at Y"). Body under 120 words:
+To the likely hiring manager in `job.md` when they have an email (they own the role; a short note from a qualified candidate is easy for them to forward). When the hiring manager has no email, write them a LinkedIn connection note under 300 characters instead, and send `email.md` to the recruiter. One email per company. The file starts with `To: Name <email>` and `Subject: …` lines, then a blank line, then the body; the inbox's Open in mail button reads them. Subject under 8 words, specific ("AI platform engineer: built X at Y"). Body under 120 words (lint blocks over 150):
 
 - Line 1: why them: they're the recruiter or manager for this role, and one concrete thing about the company or team.
 - Lines 2–3: the user's single most relevant result, with a link (project, GitHub, portfolio) if `profile.md` has one.
@@ -47,7 +49,7 @@ One email per company; one follow-up after 5–7 days with no reply, under 60 wo
 
 ## Form answers (`draft` fields)
 
-Write each with `JH answer ID FIELD "text"`; options are validated. Add `--remember` for questions that recur across companies with the same answer ("Do you have a non-compete?"), never for company-specific ones ("Why Anthropic?").
+Write each with `JH answer ID FIELD "text"`; options are validated, and multi-select fields take several separated by `; ` (`"TypeScript; React"`). If `for_user` lists a field `answers.json` already covers (a link, location, sponsorship), answer it with `--user` from `answers.json` and tell the user nothing is needed. Add `--remember` for questions that recur across companies with the same answer ("Do you have a non-compete?"), never for company-specific ones ("Why Anthropic?").
 
 - **Why this company / why this role**: two to four sentences. One specific thing about the company (product, customers, news in `job.md`), then the user's most relevant result from `profile.md`.
 - **Describe your experience with X**: the one or two `profile.md` facts that show X, with numbers, in under 100 words unless the field asks for more.

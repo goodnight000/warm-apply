@@ -21,7 +21,7 @@ It never submits an application, sends a message or emails anyone; you do those 
 
 All the paid data goes through [Monid](https://monid.ai?fpr=charles): one API key for 1,700+ APIs, paid per call, no subscriptions. That covers LinkedIn job search, Google Jobs, Apollo, Hunter, funding and news data, and ContactOut. ContactOut normally makes you book a sales meeting just to get an API key; through Monid it's the same key as everything else, about $0.02 per profile. Without Monid, each of those would be a separate account, contract or scraper.
 
-**Cost:** about $0.20 a day to search, plus about $0.16 for each job it prepares, so roughly $1 a day for five prepared jobs. Applications, forms and PDFs are free. Default caps are $1.00 per run and $1.50 per day, and every call is logged with what it cost. New Monid accounts get $1 of free credit, enough for the first day.
+**Cost:** about $0.20 a day to search, plus $0.15–0.20 for each job it prepares, so roughly $1 a day for five prepared jobs. Applications, forms and PDFs are free. Default caps are $1.00 per run and $1.50 per day, and every call is logged with what it cost. New Monid accounts get $1 of free credit, enough for the first day.
 
 **[Sign up for Monid →](https://monid.ai?fpr=charles)** (referral link)
 

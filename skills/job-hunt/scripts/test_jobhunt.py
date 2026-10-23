@@ -694,6 +694,49 @@ class Round5(unittest.TestCase):
         self.assertTrue(jobhunt.knockout({"description": "This role is open to US citizens only."}, {"us_citizen": False}))
         self.assertIsNone(jobhunt.knockout({"description": "Python."}, {"security_clearance": True}))
 
+    def test_ranges_links_location_and_self_id(self):
+        a = {**self.A, "linkedin": "", "github": "https://github.com/p", "location": "Brooklyn, NY", "self_id": {"gender": "decline"}}
+        self.assertEqual(forms.pick_range(["0-5 years", "5-10 years"], 4), "0-5 years")
+        self.assertEqual(forms.pick_range(["Less than 1 year", "1-2 years", "2-3 years", "3+ years"], 4), "3+ years")
+        self.assertEqual(self.answer("LinkedIn profile, personal website, or GitHub URL", a=a), "https://github.com/p")
+        f = [{"label": "Your Location", "key": "l", "type": "location", "options": [], "required": True, "section": "main"},
+             {"label": "What is your gender identity?", "key": "g", "type": "select", "required": True, "section": "main",
+              "options": ["Man", "Woman", "I prefer not to answer"]}]
+        forms.prefill(f, a, {}, {})
+        self.assertEqual([x.get("answer") for x in f], ["Brooklyn, NY", "I prefer not to answer"])
+
+    def test_lint_catches_counts_and_unconfirmed_tools(self):
+        with tempfile.TemporaryDirectory() as t:
+            cli(t, "init")
+            home = jobhunt.Home(t)
+            (home.root / "profile.md").write_text("# Profile\nBuilt dashboards in React at Datadog; cut load time from 4.1s to 1.8s.\n" * 20)
+            job = jobhunt.blank_job(title="Frontend Engineer", company="Acme", description="We use Kubernetes and React.")
+            home.save_jobs({job["id"]: job})
+            folder = jobhunt.app_folder(home, job)
+            (folder / "resume.md").write_text("# Priya\n- Built React dashboards at Datadog; led a team of 12 engineers using Kubernetes.\n")
+            code, out = cli(t, "lint", job["id"])
+            errs = " ".join(out["errors"])
+            self.assertIn("12 engineers", errs)
+            self.assertIn("kubernetes", errs)
+            self.assertNotIn("react", errs)
+
+    def test_multiselect_answers_and_apply_url(self):
+        with tempfile.TemporaryDirectory() as t:
+            cli(t, "init")
+            home = jobhunt.Home(t)
+            job = jobhunt.blank_job(title="Engineer", company="Acme")
+            home.save_jobs({job["id"]: job})
+            app = {"ats": "ashby", "apply_url": "https://x", "fields": [
+                {"label": "Tools", "key": "t", "type": "multiselect", "options": ["TypeScript", "Node.js", "React"],
+                 "required": True, "section": "main", "status": "user"}]}
+            jobhunt.save_application(home, job, app)
+            code, out = cli(t, "answer", job["id"], "Tools", "TypeScript; React")
+            self.assertEqual((code, out["answer"]), (0, "TypeScript; React"))
+            code, out = cli(t, "answer", job["id"], "Tools", "TypeScript; Rust")
+            self.assertEqual(code, 1)
+            code, out = cli(t, "set", job["id"], "--apply-url", "https://acme.dev/jobs/1")
+            self.assertEqual(out["apply_url"], "https://acme.dev/jobs/1")
+
     def test_non_latin_names_get_distinct_ids(self):
         self.assertNotEqual(jobhunt.job_key("株式会社メルカリ", "ソフトウェアエンジニア"), jobhunt.job_key("楽天グループ株式会社", "ソフトウェアエンジニア"))
 

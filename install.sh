@@ -63,8 +63,9 @@ if (cd "$skill/scripts" && JOBHUNT_OFFLINE=1 python3 -m unittest -q test_jobhunt
 
 echo
 if [ "$todo" = 0 ]; then
-  echo "Ready. Open your agent in the folder where you want your job-hunt files and say:"
+  echo "Ready. Open your agent (Claude Code, Codex, Cursor, Gemini CLI) anywhere and say:"
   echo "  \"Set up my job hunt\" (then attach or paste your resume)"
+  echo "Your files will live in ~/job-search/job-hunt (set JOB_HUNT_HOME to use another folder)."
 else
   echo "$todo thing(s) to finish above, then rerun ./install.sh"
 fi

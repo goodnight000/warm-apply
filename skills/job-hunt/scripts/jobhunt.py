@@ -95,7 +95,8 @@ NO_SPONSOR = re.compile(
 CITIZEN_ONLY = re.compile(r"\b(must be|only) (a )?(u\.?s\.?|united states) citizens?\b|\b(u\.?s\.?|united states) citizenship (is )?required"
                           r"|\b(u\.?s\.?|united states) citizens? only\b", re.I)
 CLEARANCE = re.compile(r"\b(active|current)\s+(ts/sci|top secret|secret|security|dod)\s+clearance|\bclearance (is )?required"
-                       r"|\bmust (hold|have|possess|obtain) (an? )?(active )?(security|ts/sci|secret) clearance|\bts/sci\b", re.I)
+                       r"|\bmust (hold|have|possess|obtain) (an? )?(active )?(security|ts/sci|secret) clearance|\bts/sci\b"
+                       r"|\bimpact level [456]\b|\bil[- ]?[456]\b|\bpublic trust\b|eligib\w+ (for|to obtain) (a )?(security|dod) clearance", re.I)
 YEARS = re.compile(r"(\d{1,2})\s*\+?\s*(?:(?:-|–|to)\s*\d{1,2}\s*\+?\s*)?(?:years?|yrs)\b[^.\n]{0,60}?\bexperience"
                    r"|experience[^.\n]{0,25}?\b(\d{1,2})\s*\+?\s*(?:years?|yrs)\b", re.I)
 LEVELS = [("principal", 4, r"\b(principal|distinguished|fellow)\b"), ("director", 4, r"\b(director|vp|vice president|head of)\b"),
@@ -327,9 +328,9 @@ class Monid:
             with self.lock:
                 self.health.pop(provider, None)
                 write_json(self.home.providers_path, self.health)
+        # Monid sometimes reports no cost; in testing those runs didn't move the balance, so the ledger
+        # records $0 (flagged) to match what was billed. The reservation still guarded the budget.
         estimated = ok and reported is None
-        if estimated:
-            cost = est
         return self._record(provider, endpoint, step, ok=ok, http=http, cost=cost, error=error,
                             output=record.get("output"), run_id=record.get("runId"), reserved=est, estimated=estimated)
 
@@ -337,7 +338,7 @@ class Monid:
         entry = {"ts": iso(now()), "run_id": run_id, "provider": provider, "endpoint": endpoint, "purpose": self.purpose,
                  "step": step or self.purpose, "ok": ok, "http": http, "cost": round(cost, 6)}
         if estimated:
-            entry["estimated"] = True  # Monid reported no cost for this run; the listed price is recorded
+            entry["cost_unreported"] = True  # Monid reported no cost; $0 recorded, matching the balance in testing
         if error:
             entry["error"] = error
         with self.lock:
@@ -603,7 +604,8 @@ KNOWN_AGENCIES = {"cybercoders", "robert half", "teksystems", "insight global", 
                   "adecco", "hays", "apex systems", "motion recruitment", "jobot", "experis", "kelly services",
                   "manpower", "beacon hill", "vaco", "collabera", "harnham"}
 STAFFING_TERMS = re.compile(r"\b(c2c|corp[- ]to[- ]corp|w2 only|w2 contract|contract[- ]to[- ]hire|staff augmentation"
-                            r"|implementation partner|end client|prime vendor)\b", re.I)
+                            r"|implementation partner|end client|prime vendor|companies (apply|reach out) to you"
+                            r"|get (matched|vetted) (with|by) (top )?companies|join our (talent )?(network|marketplace))\b", re.I)
 
 
 GIG_PLATFORMS = {"alignerr", "toloka", "crossing hurdles", "outlier", "data annotation", "dataannotation", "remotasks",
@@ -702,15 +704,17 @@ def score(job, cfg, at, cand=None):
         elif yrs <= have:
             s += 3
     name, rank = title_level(job.get("title"))
-    mine = LEVEL_RANK.get((cfg.get("level") or "").lower())
-    if rank is not None and mine is not None:
-        gap = rank - mine
+    lv = cfg.get("level")
+    mine = [LEVEL_RANK[l.lower()] for l in (lv if isinstance(lv, list) else [lv]) if l and l.lower() in LEVEL_RANK]
+    if rank is not None and mine:
+        # A range ("mid" and "senior") counts both as on-level.
+        gap = rank - max(mine) if rank > max(mine) else (rank - min(mine) if rank < min(mine) else 0)
         if gap >= 2: s -= 20; why.append(f"{name}-level title, above your level")
         elif gap == 1: s -= 4; why.append(f"{name}-level title: a stretch")
         elif gap <= -2: s -= 12; why.append(f"{name}-level title, below your level")
     top = annual(job, "salary_max")
     if top is not None and cfg.get("salary_min") and top >= cfg["salary_min"]:
-        s += 6; why.append("pays above floor")
+        s += 6; why.append("pays above floor" if top > cfg["salary_min"] else "top of range equals your floor")
     elif top is None:
         loc = " " + (job.get("location") or "").lower()
         if any(p in loc for p in PAY_TRANSPARENCY):
@@ -1338,7 +1342,8 @@ def find_contact(m, job, cfg):
         r = m.run("ploid", "/linkedin/search", body={"filters": {"keywords": f"{job['company']} recruiter"}, "limit": 10},
                   step=f"linkedin people: {job['company']}")
         items = ((r["output"] or {}).get("data") or {}).get("items") or [] if r["ok"] else []
-        items = [i for i in items if works_at(i.get("headline"), job["company"])]
+        # Keyword search matches other companies with the same name ("CEO at NANGO"); keep only recruiters.
+        items = [i for i in items if works_at(i.get("headline"), job["company"]) and RECRUITER.search(i.get("headline") or "")]
         items.sort(key=lambda i: title_rank(i.get("headline"), cfg["contact_titles"]))
         if items:
             i = items[0]
@@ -1836,12 +1841,21 @@ def money(v):
 
 
 def cmd_set(home, args):
-    if args.status not in STATUSES:
+    if args.status is None and not (args.apply_url or args.note):
+        raise Fail("Nothing to change.", "Give a status, --apply-url or --note.")
+    if args.status is not None and args.status not in STATUSES:
         raise Fail(f"Unknown status '{args.status}'", "One of: " + ", ".join(STATUSES))
     jobs, jid = get_job(home, args.id)
     j = jobs[jid]
-    j.setdefault("history", []).append({"ts": iso(now()), "from": j.get("status"), "to": args.status, "note": args.note})
-    j["status"] = args.status
+    if args.status is not None:
+        j.setdefault("history", []).append({"ts": iso(now()), "from": j.get("status"), "to": args.status, "note": args.note})
+        j["status"] = args.status
+    if args.apply_url:
+        if not re.match(r"^https?://", args.apply_url):
+            raise Fail("--apply-url must be an http(s) link.", "Pass the full URL of the application page.")
+        j["apply_url"] = args.apply_url
+        if (app_folder(home, j) / "job.md").exists():
+            (app_folder(home, j) / "job.md").write_text(render_job_md(j))
     if args.followed_up:
         j["followed_up"] = iso(now())
     if args.via:
@@ -1849,7 +1863,7 @@ def cmd_set(home, args):
     if args.note:
         j["note"] = args.note
     home.save_jobs(jobs)
-    return {"id": jid, "status": args.status}
+    return {"id": jid, "status": j.get("status"), "apply_url": j.get("apply_url")}
 
 
 def warm_cell(j):
@@ -1858,11 +1872,13 @@ def warm_cell(j):
     return "—" if not w else (f"{v} verified" + (f", {len(w) - v} to check" if len(w) > v else ""))
 
 
-def form_cell(j):
+def form_cell(j, home=None):
     f = j.get("form")
     if not f:
         return "by hand"
-    return f"prefilled; {len(f.get('for_user') or [])} for you"
+    app = read_json(app_folder(home, j) / "application.json", None) if home else None
+    left = len(forms.summary(app["fields"]).get("for_user") or []) if app else len(f.get("for_user") or [])
+    return f"prefilled; {left} for you"
 
 
 def cmd_digest(home, args):
@@ -1881,7 +1897,8 @@ def cmd_digest(home, args):
             dead.append(j)
         elif days >= 5 and not j.get("followed_up"):
             stale.append(j)
-    spent = sum(e["cost"] for e in home.ledger() if local_day(e["ts"]) == day)
+    # The daily run's cost, same as check and the budget; one-off setup (company discovery) is excluded.
+    spent = sum(e["cost"] for e in home.ledger() if local_day(e["ts"]) == day and e.get("purpose") != "setup")
     lines = [f"# Job hunt: {day}", "", f"{len(queue)} waiting for your approval. Monid data cost today: ${spent:.2f}.", ""]
     if queue:
         lines += ["| # | Role | Company | Pay | Applicants | Contact | Warm paths | Form | Why | Status |", "|---|---|---|---|---|---|---|---|---|---|"]
@@ -1891,7 +1908,7 @@ def cmd_digest(home, args):
             hm = j.get("hiring_manager") or {}
             contact = "careers page only" if j.get("outreach_ok") is False else (hm.get("name") or c.get("name") or "—")
             lines.append(f"| {i} | [{j['title'].strip()}]({folder}/job.md) | {j['company']} | {b['salary'] or '—'} | "
-                         f"{b['applicants'] if b['applicants'] is not None else '—'} | {contact} | {warm_cell(j)} | {form_cell(j)} | {(j.get('note') or '').replace('|', '/')} | {j['status']} |")
+                         f"{b['applicants'] if b['applicants'] is not None else '—'} | {contact} | {warm_cell(j)} | {form_cell(j, home)} | {(j.get('note') or '').replace('|', '/')} | {j['status']} |")
         lines.append("")
     if stale:
         lines += ["## Follow up once (applied 5+ days ago, no update)"] + [f"- {j['title']} at {j['company']}" for j in stale] + [""]
@@ -2039,7 +2056,14 @@ def cmd_answer(home, args):
     if args.text is None:
         raise Fail("No answer given.", "Pass the answer text, or --to-user to leave the field for the user.")
     value = args.text
-    if f["options"]:
+    if f["options"] and f["type"] == "multiselect":
+        parts = [p.strip() for p in re.split(r"\s*;\s*|\s*,\s*(?![^()]*\))", value) if p.strip()]
+        picked = [forms.pick(f["options"], p) for p in parts]
+        if not parts or None in picked:
+            bad = [p for p, c in zip(parts, picked) if c is None]
+            raise Fail(f"{bad or value} isn't among the options", "Separate several with '; '. Options: " + " / ".join(f["options"]))
+        value = "; ".join(dict.fromkeys(picked))
+    elif f["options"]:
         choice = forms.pick(f["options"], value)
         if choice is None:
             raise Fail(f"'{value}' isn't one of the options", "Options: " + " / ".join(f["options"]))
@@ -2093,6 +2117,17 @@ def norm_num(s):
 
 URL = re.compile(r"(https?://\S+|\b[\w-]+(\.[\w-]+)+/\S*)")
 
+# Small numbers are exempt from tracing ("2 years"), except counts like these, which are claims.
+COUNT_CLAIM = re.compile(r"\b(\d{1,2})\s+(engineers|people|reports|direct reports|developers|designers|teams|customers|clients"
+                         r"|countries|languages|services|microservices|products|launches|patents|papers|interns|hires)\b", re.I)
+# Tools a resume can't claim unless profile.md does; config `skills` are added at lint time.
+TECH_TERMS = ["python", "java", "javascript", "typescript", "go", "golang", "rust", "c++", "c#", "ruby", "php", "scala",
+              "kotlin", "swift", "react", "vue", "angular", "svelte", "next.js", "node.js", "django", "flask", "fastapi",
+              "rails", "spring", "graphql", "postgresql", "mysql", "mongodb", "redis", "kafka", "spark", "airflow",
+              "snowflake", "dbt", "bigquery", "aws", "gcp", "azure", "kubernetes", "docker", "terraform", "pytorch",
+              "tensorflow", "jax", "langchain", "elasticsearch", "figma", "tableau", "looker", "salesforce", "hubspot"]
+EMPLOYER_CLAIM = re.compile(r"\b(?:at|for|with|joined)\s+((?:[A-Z][\w&.-]+)(?:\s+[A-Z][\w&.-]+){0,2})")
+
 
 def body_text(path):
     text = re.sub(r"<!--[\s\S]*?-->", "", path.read_text())
@@ -2103,7 +2138,8 @@ def cmd_lint(home, args):
     jobs, jid = get_job(home, args.id)
     j, cfg, cand = jobs[jid], home.config(), home.answers()
     folder = app_folder(home, j)
-    source_text = " ".join([(home.root / "profile.md").read_text() if (home.root / "profile.md").exists() else "",
+    profile_text = (home.root / "profile.md").read_text() if (home.root / "profile.md").exists() else ""
+    source_text = " ".join([profile_text,
                             j.get("description") or "",
                             json.dumps({k: v for k, v in cand.items() if k not in ("phone", "location")})])
     found = {norm_num(n) for n in NUMBER.findall(URL.sub(" ", source_text))}
@@ -2122,6 +2158,23 @@ def cmd_lint(home, args):
             small = core.replace(".", "").isdigit() and float(core or 0) < 20 and v == core
             if not small and v not in sources and core not in sources:
                 errors.append(f"{name}: '{n.strip()}' isn't in profile.md, the posting or answers.json")
+        for m_ in COUNT_CLAIM.finditer(text):
+            if m_.group(1) not in sources:
+                errors.append(f"{name}: '{m_.group(0)}' isn't in profile.md, the posting or answers.json")
+        # Tools and employers must come from the user's own facts; for a resume, the posting doesn't count.
+        profile_l = profile_text.lower()
+        for term in dict.fromkeys(TECH_TERMS + [k.lower() for k in cfg.get("skills") or []]):
+            pat = rf"(?<![\w.+#]){re.escape(term)}(?![\w+#])"
+            if re.search(pat, text, re.I) and not re.search(pat, profile_l):
+                if name == "resume.md":
+                    errors.append(f"resume.md: '{term}' isn't in profile.md; don't claim tools the user hasn't confirmed")
+                elif not re.search(pat, (j.get("description") or "").lower()):
+                    warnings.append(f"{name}: mentions '{term}', which isn't in profile.md or the posting")
+        known = (profile_text + " " + (j.get("description") or "") + " " + j.get("company", "")).lower()
+        for m_ in EMPLOYER_CLAIM.finditer(text):
+            org = m_.group(1).rstrip(".")
+            if org.split()[0].lower() not in known and len(org) > 2:
+                warnings.append(f"{name}: '{m_.group(0)}': {org} isn't in profile.md or the posting; check it's true")
         if PLACEHOLDER.search(text):
             errors.append(f"{name}: unfilled placeholder '{PLACEHOLDER.search(text).group(0)}'")
         for phrase in FILLER:
@@ -2442,7 +2495,8 @@ def render_inbox(home, queue, day, spent):
         if j.get("hiring_manager"):
             people.append(f"hiring manager {html_escape(j['hiring_manager'].get('name'))} ({html_escape(j['hiring_manager'].get('title'))})")
         if j.get("contact"):
-            people.append(f"recruiter {html_escape(j['contact'].get('name'))}")
+            role = "recruiter" if RECRUITER.search(j["contact"].get("title") or "") else "contact"
+            people.append(f"{role} {html_escape(j['contact'].get('name'))}")
         if j.get("warm_paths"):
             people.append(f"{len(j['warm_paths'])} referral path{'s' if len(j['warm_paths']) > 1 else ''}")
         if people:
@@ -2513,6 +2567,8 @@ def cmd_open(home, args):
     path = home.root / "inbox.html"
     if not path.exists():
         cmd_digest(home, argparse.Namespace(date=None))
+    if os.environ.get("JH_SCHEDULED_RUN"):
+        return {"inbox": str(path), "opened": False, "note": "scheduled run: not opening a browser"}
     opener = "open" if sys.platform == "darwin" else ("start" if os.name == "nt" else "xdg-open")
     try:
         subprocess.run([opener, str(path)], check=False, capture_output=True, timeout=20, shell=os.name == "nt")
@@ -2535,7 +2591,8 @@ def schedule_wrapper(home, agent_bin, agent, script):
     if agent == "claude":
         # Postings are untrusted text read by an agent nobody is watching: the shell may run only this skill's
         # script, and files may be written only inside the state folder.
-        cmd = [agent_bin, "-p", prompt, "--permission-mode", "dontAsk", "--allowedTools",
+        # No MCP servers (browser control and the rest stay off); the user's settings and login still load.
+        cmd = [agent_bin, "-p", prompt, "--permission-mode", "dontAsk", "--strict-mcp-config", "--allowedTools",
                f"Bash(python3 {script}:*)", "Read", "Glob", "Grep", "Skill",
                f"Write(/{home.root}/**)", f"Edit(/{home.root}/**)"]
     else:
@@ -2773,10 +2830,11 @@ def main(argv=None):
     e.add_argument("--refresh", action="store_true", help="research again even if already enriched")
     st = sub.add_parser("set", help="change a job's status")
     st.add_argument("id")
-    st.add_argument("status")
+    st.add_argument("status", nargs="?", help="new status; omit to only change --apply-url or --note")
     st.add_argument("--note")
     st.add_argument("--followed-up", action="store_true", help="record that the one follow-up was sent")
     st.add_argument("--via", help="channels used, comma-separated: referral,email,form")
+    st.add_argument("--apply-url", help="correct the job's application link (e.g. an HN post that linked the homepage)")
     d = sub.add_parser("digest", help="write the approval queue for a day")
     d.add_argument("--date")
     sub.add_parser("spend", help="Monid spend from the ledger")

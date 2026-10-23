@@ -341,6 +341,8 @@ def pick(options, answer):
     for o in options:
         if norm(o) == a:
             return o
+    if re.fullmatch(r"\d+(\.\d+)?", str(answer).strip()):
+        return pick_range(options, float(answer))
     if a in ("yes", "no"):
         # "Yes, now" or "No, I won't" only; "I will not require…" or "Not now, but…" go to the user.
         hits = [o for o in options if re.match(a + r"\b", norm(o))]
@@ -367,6 +369,26 @@ def lives_in(question, location):
     place, loc = norm(m.group(1)), norm(location)
     names = CITY_ALIASES.get(place, [place])
     return "Yes" if any(n in loc for n in names) else None
+
+
+def pick_range(options, n):
+    """4 years -> "3-5 years", "3+ years" or "Less than 5 years"; None if no option says so unambiguously."""
+    hits = []
+    for o in options:
+        t = o.lower().replace("–", "-")
+        m = re.search(r"(\d+)\s*-\s*(\d+)", t)
+        if m and float(m.group(1)) <= n <= float(m.group(2)) + 0.99:
+            hits.append(o); continue
+        m = re.search(r"(\d+)\s*\+|(\d+) (years )?(or more|and (above|over|up))|more than (\d+)|over (\d+)", t)
+        if m:
+            low = float(next(g for g in (m.group(1), m.group(2), m.group(6), m.group(7)) if g))
+            if n >= low + (1 if m.group(6) or m.group(7) else 0):
+                hits.append(o)
+            continue
+        m = re.search(r"(less than|under|fewer than|<)\s*(\d+)", t)
+        if m and n < float(m.group(2)):
+            hits.append(o)
+    return hits[0] if len(hits) == 1 else None
 
 
 COUNTRIES = {
@@ -402,6 +424,9 @@ def work_auth(a, question):
     return yes_no(a.get("work_authorized"))
 
 
+SELF_ID_QUESTION = re.compile(r"\b(gender|ethnicit|race\b|racial|veteran|disabilit|sexual orientation|transgender|lgbt|hispanic)", re.I)
+
+
 DECLINE = re.compile(r"decline|don.?t wish|do not wish|prefer not|not to (say|answer|disclose)|don.?t want|do not want", re.I)
 
 
@@ -414,15 +439,17 @@ def rules(a, job):
     out = [
         (r"^(legal )?first name|given name", first),
         (r"^(legal )?last name|family name|surname", last),
-        (r"^\s*(your )?(full |legal )*name\s*[*:]?\s*$|^(full|legal) name\b(?!.*(prefer|pronoun))", f"{first} {last}".strip()),
-        (r"preferred (first )?name.*last name|what is your preferred first name and last", f"{a.get('preferred_name') or first} {last}".strip()),
+        (r"^\s*(your )?(full |legal )*name\s*[*:]?\s*$|^(full|legal) name\b(?!.*(prefer|pronoun))|^what is your (full |legal )*name\s*\??\s*$",
+         f"{first} {last}".strip()),
+        (r"preferred (first )?name.*last name|what is your preferred first name and last|full name \(preferred\)|preferred full name",
+         f"{a.get('preferred_name') or first} {last}".strip()),
         (r"preferred (first )?name|name you go by|what is your preferred", a.get("preferred_name") or first),
         (r"e-?mail", a.get("email")),
         (r"\bphone\b|^\s*(mobile|cell)( number)?\s*[*:]?\s*$|(mobile|cell) number", a.get("phone")),
         (r"linkedin", a.get("linkedin")),
         (r"github", a.get("github") or a.get("website")),
         (r"portfolio|website|personal (site|url)|other (website|url|link)|dribbble|behance", a.get("website") or a.get("github")),
-        (r"current(ly)? (located|location)|where are you (currently )?(located|based)|^location$|^current location|city.*(live|reside)", a.get("location")),
+        (r"current(ly)? (located|location)|where are you (currently )?(located|based)|^\s*(your |current )?location\s*[*:]?\s*$|city.*(live|reside)", a.get("location")),
         (r"address from which you plan|where (will|would) you (be )?work", a.get("location")),
         (r"which country|country (of residence|where you|will you)|country.*(based|reside|live)", a.get("country")),
         (r"current (company|employer)|^company$|^organization$|most recent (company|employer)", a.get("current_company")),
@@ -438,6 +465,8 @@ def rules(a, job):
         # Only total experience; "years of Python experience" is for the user or a draft (drafting.md).
         (r"^\s*(total )?years of (professional |work |relevant |industry |software )?experience\s*[*:?]?\s*$"
          r"|how many (total )?years of (professional |work |relevant |industry )?(work )?experience (do )?you have\s*\??\s*$",
+         a.get("years_experience")),
+        (r"^how much (professional |software |work )?(engineering |development )?experience (do )?you have\s*\??\s*$",
          a.get("years_experience")),
         (r"pronoun", a.get("pronouns") or None),
         (r"how did you (hear|find|learn)|where did you (hear|see|find)|referral source|^source$", via),
@@ -471,9 +500,10 @@ def prefill(fields, answers, job, files):
             else:
                 f.update(status=OPTIONAL, source="optional upload")
             continue
-        if f["section"] == "self_id":
+        if f["section"] == "self_id" or (opts and SELF_ID_QUESTION.search(label)):
             want = next((v for k, v in self_id.items() if norm(k) in norm(label)), None)
-            choice = pick(opts, want) if want else next((o for o in opts if DECLINE.search(o)), None)
+            declining = not want or norm(want) in ("decline", "prefer not to say", "no answer")
+            choice = next((o for o in opts if DECLINE.search(o)), None) if declining else pick(opts, want)
             f.update(answer=choice, status=FILLED if choice else USER, source="voluntary self-identification (your saved choice)")
             continue
         if LEGAL.search(label):
@@ -486,10 +516,14 @@ def prefill(fields, answers, job, files):
         if ONLY_USER.search(label) or PREFERENCE.search(label):
             f.update(status=USER, source="only you know this")
             continue
+        empty_link = False
         for pattern, value in rules(a, {**job, "_question": label}):
             if pattern in IDENTITY and not identity_label(label):
                 continue
             if re.search(pattern, label, re.I):
+                if value in (None, "") and pattern in IDENTITY:
+                    empty_link = True  # "LinkedIn, website, or GitHub URL": try the next link the user has
+                    continue
                 if value in (None, ""):
                     if f["required"]:
                         f.update(status=USER, source="add this to answers.json to fill it automatically next time")
@@ -506,7 +540,12 @@ def prefill(fields, answers, job, files):
                         f.update(answer=choice, status=FILLED if choice is not None else USER, source="answers.json")
                 break
         else:
-            if not f["required"]:
+            if f["type"] == "location" and a.get("location"):
+                f.update(answer=a["location"], status=FILLED, source="answers.json")
+            elif empty_link:
+                f.update(status=USER if f["required"] else OPTIONAL,
+                         source="add this to answers.json to fill it automatically next time" if f["required"] else "optional; left blank")
+            elif not f["required"]:
                 f.update(status=OPTIONAL, source="optional; left blank unless it helps")
             elif f["type"] in ("longtext", "text"):
                 f.update(status=DRAFT, source="draft from profile.md")
