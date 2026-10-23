@@ -1,0 +1,51 @@
+{
+  "runId": "01M5GW7PEYRNMNNAWCM70SM30R",
+  "provider": "fundable",
+  "endpoint": "/industry/search",
+  "status": "COMPLETED",
+  "output": {
+    "success": true,
+    "data": {
+      "industries": [
+        {
+          "permalink": "fintech-e067",
+          "name": "FinTech",
+          "industry_type": "INDUSTRY"
+        }
+      ],
+      "totalCount": 1
+    },
+    "meta": {
+      "page": 0,
+      "page_size": 1
+    }
+  },
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "price": {
+    "type": "PER_CALL",
+    "amount": {
+      "value": 0,
+      "currency": "USD"
+    }
+  },
+  "billing": {
+    "reportedCost": {
+      "currency": "USD",
+      "value": 0,
+      "unit": "MICRO_DOLLAR"
+    }
+  },
+  "resultCount": 1,
+  "billedUnits": 1,
+  "createdAt": "2026-10-22T03:59:47.922Z",
+  "completedAt": "2026-10-22T03:59:50.041Z",
+  "hints": {
+    "retrieve the response later": "monid runs get -r 01M5GW7PEYRNMNNAWCM70SM30R",
+    "search funded companies in the resolved industry": "monid run -p fundable -e /companies -i '<BODY>' --query '<QUERY_PARAMS>' --path '<PATH_PARAMS>'  # pass the permalink under company.industries or company.super_categories"
+  },
+  "notes": [
+    "Update available: 0.1.7 → 0.1.8. Run `npm update -g @monid-ai/cli` to update monid-cli. Download the latest version of skill at https://monid.ai/SKILL.md."
+  ]
+}

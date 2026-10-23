@@ -1,0 +1,134 @@
+{
+  "runId": "FIXTURE",
+  "provider": "context.dev",
+  "endpoint": "/news/search",
+  "status": "COMPLETED",
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "cost": {
+    "value": 0.0005,
+    "currency": "USD"
+  },
+  "output": {
+    "data": [
+      {
+        "id": "250a4b29ec7a876c3735ba3b8a87ff773255032890b2c677244ab353790147aa",
+        "story_id": "6f998dca8ed92887bef12515ba69b578f97b67433f85802b546ee333968caffc",
+        "url": "https://yahoo.com/news/articles/cameron-county-pitching-harlingen-7-060100944.html",
+        "title": "Cameron County pitching Harlingen $7 million drainage project",
+        "description": "HARLINGEN — A $7 million offer to widen a main canal draining Valley International Airport is back on the table. Weeks after a data center developer offered to fund the project, city commissioners are...",
+        "language": "en",
+        "authors": [
+          "@YahooNews"
+        ],
+        "image_url": "https://s.yimg.com/lo/mysterio/api/150afeec82b96c8edfb05d7e98a23e7e5f1e6917dc328e2c1a7c8ecc4d4736fe/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fs.yimg.com%2Fcv%2Fapiv2%2Fsocial%2Fimages%2Fyahoo_default_logo-1200x1200.png",
+        "published_at": "2026-10-21T06:01:00.000Z",
+        "type": "editorial",
+        "source": {
+          "name": "Yahoo News",
+          "domain": "yahoo.com",
+          "direct": true
+        },
+        "match": {
+          "level": "primary",
+          "confidence": 0.75
+        }
+      },
+      {
+        "id": "839e3dc539aefec999e73ee0e051c5042155c44789dea11dbd9e3bafcdcf3c22",
+        "story_id": "7996f63c64759140625638bebb1b99ee26c04479d8beb338efca28d8ee303d5b",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/wulf-stock-rises-overnight-ceo-054814844.html",
+        "title": "WULF Stock Rises Overnight As CEO Reiterates Strong Power Demand For 2028, 2029: Retail Highlights Deep Discount",
+        "description": "In a post on X, TeraWulf CEO and co-founder Paul B. Prager said demand for power remains strong through 2028 and 2029, adding that the company’s site is “energized” to meet growing demand.",
+        "language": "en",
+        "authors": [],
+        "image_url": "https://s.yimg.com/lo/mysterio/api/8e62dfde6ef13f503f66a1fdc9a1c367c4a548dbe79b2c5d27b87b8c20c0f042/lightyear_networkapi/resizefill_w1200%3Bquality_80%3Bformat_webp/https%3A%2F%2Fmedia.zenfs.com%2Fen%2Fstocktwits_383%2F9081adf2fcd8dd94e4e8aa3ede00fa57",
+        "published_at": "2026-10-21T05:48:14.000Z",
+        "type": "editorial",
+        "source": {
+          "name": "Yahoo Finance",
+          "domain": "finance.yahoo.com",
+          "direct": true
+        },
+        "match": {
+          "level": "secondary",
+          "confidence": 0.2
+        }
+      },
+      {
+        "id": "fce044c1184a36a9ee8e68ecb0d123c75ce5df0756a4696b9023f65b6c86cb3c",
+        "story_id": "20a271ec628f23afaca6e05b18281e61ddf033d4d2e47c1c1d841e4e7f246d6e",
+        "url": "https://finance.yahoo.com/technology/ai/articles/pentagon-getting-ready-bankroll-ai-100000445.html",
+        "title": "Is the Pentagon Getting Ready to Bankroll AI’s Supply Chain? If So, That Should Tell You Something.",
+        "description": "The real AI race is being fought over hardware, not the software. James Altucher says Elon Musk wants to “control the AI industry from end to end” with his new hardware.Baltimore, MD, Oct. 20, 2026 (GLOBE NEWSWIRE) -- When the Pentagon starts writing checks, pay attention to where the money goes. Its investment arm is reportedly in talks to lend $5 billion to build AI hardware in America. Not software. Hardware. That’s the part of AI most investors ignore. In a new free presentation, tech analys",
+        "language": "en",
+        "authors": [],
+        "image_url": "https://s.yimg.com/cv/apiv2/cv/apiv2/social/images/yahoo-finance-default-logo.png",
+        "published_at": "2026-10-20T10:00:00.000Z",
+        "type": "editorial",
+        "source": {
+          "name": "Yahoo Finance",
+          "domain": "finance.yahoo.com",
+          "direct": true
+        },
+        "match": {
+          "level": "secondary",
+          "confidence": 0.4
+        }
+      },
+      {
+        "id": "bae5d85ff3fa44671af6c0feaab9b545f4f5ac472f02b41e65f7d1446e39ccc5",
+        "story_id": "20a271ec628f23afaca6e05b18281e61ddf033d4d2e47c1c1d841e4e7f246d6e",
+        "url": "https://globenewswire.com/news-release/2026/10/20/3384163/0/en/is-the-pentagon-getting-ready-to-bankroll-ai-s-supply-chain-if-so-that-should-tell-you-something.html",
+        "title": "Is the Pentagon Getting Ready to Bankroll AI’s Supply Chain? If So, That Should Tell You Something.",
+        "description": "The real AI race is being fought over hardware, not the software. James Altucher says Elon Musk wants to “control the AI industry from end to end” with his...",
+        "language": "en",
+        "authors": [
+          "James Altucher, Tech Investor"
+        ],
+        "image_url": null,
+        "published_at": "2026-10-20T10:00:00.000Z",
+        "type": "press_release",
+        "source": {
+          "name": "GlobeNewswire",
+          "domain": "globenewswire.com",
+          "direct": true
+        },
+        "match": {
+          "level": "secondary",
+          "confidence": 0.55
+        }
+      },
+      {
+        "id": "7f5538f86a256ac80e493929041210d8615c002e90865ff8f2dc21afc7f54e96",
+        "story_id": "1e40e0a28912a166ab4443c9498c953c39d2bbbbc76ade703bfc1dc8fd889060",
+        "url": "https://cryptobriefing.com/terawulf-google-backing-lake-mariner",
+        "title": "TeraWulf secures Google backing for its Lake Mariner data center campus",
+        "description": "Google guarantees approximately $3.2 billion in Fluidstack leases at TeraWulf's Lake Mariner site and gets warrants for about 14% of the company.",
+        "language": "en",
+        "authors": [
+          "Diego Almada Lopez"
+        ],
+        "image_url": "https://static.cryptobriefing.com/wp-content/uploads/2026/10/18135308/library-terawulf-secures-google-backing-for-its-lake-mariner-dat-800x450.png",
+        "published_at": "2026-10-18T17:53:13.000Z",
+        "type": "editorial",
+        "source": {
+          "name": "Crypto Briefing",
+          "domain": "cryptobriefing.com",
+          "direct": true
+        },
+        "match": {
+          "level": "secondary",
+          "confidence": 0.4
+        }
+      }
+    ],
+    "has_more": true,
+    "next_cursor": "eyJmIjowLCJ0IjoxNzkyMzQ1OTkzMDAwLCJpIjoiN2Y1NTM4Zjg2YTI1NmFjODBlNDkzOTI5MDQxMjEwZDg2MTVjMDAyZTkwODY1ZmY4ZjJkYzIxYWZjN2Y1NGU5NiJ9",
+    "meta": {
+      "count": 5
+    },
+    "request_id": "33a3b618-a2ee-44e9-90fc-0dfb0818f748"
+  }
+}

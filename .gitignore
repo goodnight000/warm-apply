@@ -1,0 +1,6 @@
+test/
+__pycache__/
+*.pyc
+*.tmp
+.DS_Store
+/job-hunt/

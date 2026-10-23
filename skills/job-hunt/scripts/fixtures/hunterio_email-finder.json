@@ -1,0 +1,67 @@
+{
+  "runId": "01M5GK6HBJ069MA1KEHBZTX6HK",
+  "provider": "hunterio",
+  "endpoint": "/email-finder",
+  "status": "COMPLETED",
+  "output": {
+    "data": {
+      "first_name": "Jamie",
+      "last_name": "Doe",
+      "email": "jamie.doe@fluidstack.io",
+      "score": 82,
+      "domain": "fluidstack.io",
+      "accept_all": true,
+      "position": null,
+      "twitter": null,
+      "linkedin_url": null,
+      "phone_number": null,
+      "company": "FluidStack",
+      "source_type": "generated",
+      "provenance": "inferred",
+      "sources": [],
+      "verification": {
+        "date": "2026-10-22",
+        "status": "valid"
+      }
+    },
+    "meta": {
+      "params": {
+        "first_name": "Jamie",
+        "last_name": "Doe",
+        "full_name": null,
+        "domain": "fluidstack.io",
+        "company": null,
+        "linkedin_handle": null,
+        "max_duration": null
+      }
+    }
+  },
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "price": {
+    "type": "PER_RESULT",
+    "amount": {
+      "value": 0.0245,
+      "currency": "USD"
+    },
+    "notes": [
+      "Charged only when an address is found."
+    ]
+  },
+  "billing": {
+    "reportedCost": {
+      "currency": "USD",
+      "value": 24500,
+      "unit": "MICRO_DOLLAR"
+    }
+  },
+  "resultCount": 1,
+  "billedUnits": 1,
+  "createdAt": "2026-10-22T01:21:52.729Z",
+  "completedAt": "2026-10-22T01:21:54.470Z",
+  "hints": {
+    "retrieve the response later": "monid runs get -r 01M5GK6HBJ069MA1KEHBZTX6HK",
+    "list every address on the company's domain": "monid run -p hunterio -e /domain-search -i '<BODY>' --query '<QUERY_PARAMS>' --path '<PATH_PARAMS>'  # pass the domain to enumerate all published addresses"
+  }
+}

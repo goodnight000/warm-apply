@@ -1,0 +1,94 @@
+{
+  "runId": "01M5GQ1BN8XGM7DWAYETM1WNSK",
+  "provider": "apollo",
+  "providerName": "Apollo",
+  "endpoint": "/people/match",
+  "status": "COMPLETED",
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "price": {
+    "type": "TIERED",
+    "amount": {
+      "value": 0.026,
+      "currency": "USD"
+    },
+    "default": {
+      "type": "PER_CALL",
+      "amount": {
+        "value": 0.026,
+        "currency": "USD"
+      }
+    },
+    "tiers": [
+      {
+        "label": "Personal emails",
+        "when": {
+          "reveal_personal_emails": "true"
+        },
+        "price": {
+          "type": "PER_CALL",
+          "amount": {
+            "value": 0.026,
+            "currency": "USD"
+          }
+        }
+      },
+      {
+        "label": "Mobile phone",
+        "when": {
+          "reveal_phone_number": "true"
+        },
+        "selector": {
+          "label": "Mobile phone",
+          "key": "phone_units",
+          "in": "output"
+        },
+        "price": {
+          "type": "PER_CALL",
+          "amount": {
+            "value": 0.208,
+            "currency": "USD"
+          }
+        }
+      }
+    ],
+    "notes": [
+      "+1 credit with personal emails; +8 credits when a mobile phone is actually returned (the flag alone never charges it); a no-match consumes nothing. Apollo does bill the base credit when it can attach the name to a known company, even with no email or title."
+    ]
+  },
+  "cost": {
+    "value": 0.026,
+    "currency": "USD"
+  },
+  "resultCount": 1,
+  "billedUnits": 1,
+  "createdAt": "2026-10-22T02:28:57.366Z",
+  "startedAt": "2026-10-22T02:28:57.521Z",
+  "completedAt": "2026-10-22T02:28:58.443Z",
+  "hints": {
+    "retrieve the response later": "monid runs get -r 01M5GQ1BN8XGM7DWAYETM1WNSK"
+  },
+  "output": {
+    "person": {
+      "id": "687bc8108bacff000191d721",
+      "name": "Jamie Doe",
+      "first_name": "Jamie",
+      "last_name": "Doe",
+      "title": "Senior Recruiter",
+      "email": null,
+      "email_status": "unavailable",
+      "linkedin_url": "https://www.linkedin.com/in/example-jamie-doe",
+      "city": "San Diego",
+      "organization": {
+        "name": "Fluidstack",
+        "primary_domain": "fluidstack.io"
+      }
+    },
+    "request_id": "503592196758497788",
+    "request_id_str": "503592196758497788"
+  },
+  "notes": [
+    "Update available: 0.1.7 → 0.1.8. Run `npm update -g @monid-ai/cli` to update monid-cli. Download the latest version of skill at https://monid.ai/SKILL.md."
+  ]
+}

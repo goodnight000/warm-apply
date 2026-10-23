@@ -1,0 +1,291 @@
+{
+  "runId": "01M5GW8E7DDWBJP507TCZFQ76G",
+  "provider": "fundable",
+  "endpoint": "/deals",
+  "status": "COMPLETED",
+  "output": {
+    "success": true,
+    "data": {
+      "deals": [
+        {
+          "id": "78d8398a-939a-488a-8300-389c44170e69",
+          "round_type": "SERIES_A",
+          "extension": false,
+          "intermediate": "NONE",
+          "pre": false,
+          "date": "2026-10-20T15:00:00.000Z",
+          "created_at": "2026-10-20T15:48:39.711Z",
+          "total_round_raised": 15000000,
+          "deal_descriptions": {
+            "short_description": "Mural, the compliant system of record for fintechs and platforms, raised $15 million in a Series A led by Tether with participation from North Island Ventures and existing investors.",
+            "long_description": "Mural announced a $15 million Series A financing led by Tether with participation from North Island Ventures and existing investors. The round brings the company's total funding to $28 million. The financing is structured as a Series A equity round led by a strategic stablecoin issuer, Tether, alongside venture participation. Mural said the new capital will support its global expansion and investments in regulatory and payments infrastructure to scale agentic finance. The company disclosed operating milestones alongside the raise, including processing $2.1 billion in payment volume for end users across 128 countries since launching its API in 2025. Customers named in the announcement include Deel, Opera, and Axexo. The press release was issued Oct. 20, 2026, and notes the company was founded in 2022 and is headquartered in New York."
+          },
+          "company_id": "c03a3ed5-af9b-420c-8bd5-0b826ba6e8d9",
+          "investor_ids": [
+            "211e291d-388e-4e69-ba54-415018ac47b6",
+            "a8dfc5e1-7784-4f81-9ee3-8e933628cd8d"
+          ],
+          "angel_investor_ids": [
+            "48be86d9-2e0a-46cb-ac97-d73143fc143f",
+            "aa27d10c-b124-40dd-895e-ad39dd9f0687"
+          ],
+          "financings": [
+            {
+              "id": "0d56c162-08af-42e6-9781-2fc00cda3732",
+              "type": "SERIES_A",
+              "size_usd": 15000000,
+              "size_native": 15000000,
+              "currency": "usd"
+            }
+          ],
+          "valuation": null,
+          "articles": [
+            {
+              "link": "https://www.prnewswire.com/news-releases/mural-raises-28-million-total-to-power-fintechs-and-agentic-finance-302914128.html",
+              "date": "2026-10-20T15:00:00+00:00",
+              "is_primary": true
+            },
+            {
+              "link": "https://www.linkedin.com/posts/startuprise-usa_mural-secures-15m-in-series-a-funding-led-activity-7518620893862879232-8KpG",
+              "date": "2026-10-21T21:03:16+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.coindesk.com/ja/business/2026/10/21/tether-leads-usd15-million-series-a-for-ai-focused-payment-startup-mural",
+              "date": "2026-10-21T20:42:58+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://venturecapitaltracker.com/mural-15m-series-a-agentic-finance",
+              "date": "2026-10-21T19:42:51+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://pulse2.com/mural-raises-15-million-series-a-led-by-tether-bringing-total-funding-to-28-million/",
+              "date": "2026-10-21T19:29:27+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://crypto-economy.com/tether-backs-mural-with-15-million-investment-for-ai-driven-payment-infrastructure/",
+              "date": "2026-10-21T17:02:48+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://crypto.news/tether-leads-15m-mural-ai-payments-funding/",
+              "date": "2026-10-21T16:21:51+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.linkedin.com/posts/michele-mattei_mural-fintechs-activity-7518681204045393923-4SqT",
+              "date": "2026-10-21T16:21:51+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://crypto-economy.com/es/tether-respalda-a-mural-con-una-inversion-de-15-millones-para-desarrollar-infraestructura-de-pagos-con-ia/",
+              "date": "2026-10-21T15:00:01+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.cronista.com/mexico/finanzas-economia/la-neoyorquina-mural-pay-levanta-15-mdd-y-prepara-su-expansion-en-mexico-con-foco-en-pagos-en-tiempo-real/",
+              "date": "2026-10-21T15:00:01+00:00",
+              "is_primary": false
+            }
+          ]
+        },
+        {
+          "id": "4462f785-4d3b-4637-bbc5-d631b6ea5aa0",
+          "round_type": "SERIES_A",
+          "extension": false,
+          "intermediate": "NONE",
+          "pre": false,
+          "date": "2026-10-19T19:29:03.000Z",
+          "created_at": "2026-10-19T21:28:50.047Z",
+          "total_round_raised": 20000000,
+          "deal_descriptions": {
+            "short_description": "Prism Data, a cash-flow intelligence startup, raised $20 million in a Series A led by Story Ventures with participation from FINTOP, Core VC, Obvious Ventures, 1st & Main Growth Partners, and Mana Ventures",
+            "long_description": "Prism Data closed a $20 million Series A led by Story Ventures with participation from FINTOP, Core VC, Obvious Ventures, 1st & Main Growth Partners, and Mana Ventures. The raise is structured as a Series A equity round intended to fund continued investment in the company's technology and expansion across consumer and small business lending. The company reported its monthly API volume has increased more than 100x over the past two years, signaling rapid adoption of its products. Prism says its cash flow intelligence has earned the trust of several large financial institutions in North America, which has driven scaled deployments. Alongside the funding, Prism is introducing REFRACT™, an AI-powered transaction categorization engine that will support the next generation of its cash flow scores and analytics. The announcement frames the capital as enabling Prism to build on a decade of work to expand its market impact and improve credit allocation."
+          },
+          "company_id": "a130fd97-adc9-4dd6-b5aa-baa184199c98",
+          "investor_ids": [
+            "a28a8032-162c-40c6-85e8-bb63b8a1a5af",
+            "e635f1b8-35f9-41ec-a117-c126870dc5c7",
+            "7c0c0a38-51f0-4ffc-a98c-567ec7bd3d3d",
+            "46e43b1f-6a44-4117-8c5b-237d1e27922e",
+            "a5e4b946-b278-48b4-b89a-90a6b88390cc",
+            "8979cf40-ec57-4e93-beb5-1735420f4cb0"
+          ],
+          "angel_investor_ids": [],
+          "financings": [
+            {
+              "id": "fcf5cec2-0b04-4f7c-a8d2-1aceb51e16e5",
+              "type": "SERIES_A",
+              "size_usd": 20000000,
+              "size_native": 20000000,
+              "currency": "usd"
+            }
+          ],
+          "valuation": null,
+          "articles": [
+            {
+              "link": "https://www.linkedin.com/posts/prismdata_announcing-prism-datas-20-million-series-activity-7517951096502493184-6Bcc",
+              "date": "2026-10-19T19:29:03+00:00",
+              "is_primary": true
+            },
+            {
+              "link": "https://www.fintechfutures.com/venture-capital-funding/prism-data-lands-20m-series-a-funding",
+              "date": "2026-10-21T05:19:17+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://venturecapitaltracker.com/startup/prism-data",
+              "date": "2026-10-20T20:24:03+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.thesaasnews.com/news/prism-data-raises-20m-series-a/",
+              "date": "2026-10-20T12:10:52+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://x.com/TheSaaSNews/status/2112513217977278885",
+              "date": "2026-10-20T07:17:10+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.linkedin.com/posts/devcuration_prism-data-raises-20m-for-cash-flow-underwriting-activity-7518234739493822464-fw15",
+              "date": "2026-10-20T02:33:38+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.linkedin.com/posts/jason-rosen-42668a36_prism-data-raises-20-million-in-funding-activity-7517949641615634433-xgJL",
+              "date": "2026-10-19T18:52:13+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.prismdata.com/blog/prism-data-raises-20-million-in-funding-amid-rapid-adoption-of-its-cash-flow-underwriting-technology/",
+              "date": "2026-10-19T18:28:58+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.finextra.com/pressarticle/111338/prism-data-raises-20m",
+              "date": "2026-10-19T15:06:58+00:00",
+              "is_primary": false
+            }
+          ]
+        },
+        {
+          "id": "ce264fc8-ae2f-483e-bc89-6091c76edaef",
+          "round_type": "SERIES_B",
+          "extension": false,
+          "intermediate": "NONE",
+          "pre": false,
+          "date": "2026-10-15T19:01:53.000Z",
+          "created_at": "2026-10-15T19:46:42.748Z",
+          "total_round_raised": 31600000,
+          "deal_descriptions": {
+            "short_description": "Meow, a fintech banking platform, raised a $31.6M Series B led by Stifel Financial Corp. with participation from Archetype.",
+            "long_description": "Meow completed a $31.6 million Series B that Stifel Financial Corp. led with participation from Archetype; the company described the capital as a strategic investment and partnership. The financing brings Meow's total funding to over $60 million. As part of the deal, Stifel will offer a white-label version of Meow's platform to its commercial banking clients, beginning with venture and fund banking. Meow said banks can expect to access the full platform—onboarding, bill pay, expense management, invoicing, compliance, stablecoins and more—starting in early 2027. The company reported operating scale metrics including billions of assets on its platform, billions in annualized payment volume, and millions in annualized profits. The announcement framed the investment as enabling banks to compete with leading fintechs rather than traditional build efforts."
+          },
+          "company_id": "8d4e1528-96e3-40ed-8067-474a495fee5c",
+          "investor_ids": [
+            "ab91df0f-b2fb-4ead-bbb0-77729af979d3",
+            "51622c40-5947-4d30-b023-d75d02eb19b2"
+          ],
+          "angel_investor_ids": [],
+          "financings": [
+            {
+              "id": "f556e46a-8b50-4ab3-8958-20b8f23cf731",
+              "type": "SERIES_B",
+              "size_usd": 31600000,
+              "size_native": 31600000,
+              "currency": "usd"
+            }
+          ],
+          "valuation": null,
+          "articles": [
+            {
+              "link": "https://www.linkedin.com/posts/matthew-schkolnick-5795ab119_we-raised-our-series-b-thank-you-to-our-activity-7516495024155451392-Ys9Q",
+              "date": "2026-10-15T19:01:53+00:00",
+              "is_primary": true
+            },
+            {
+              "link": "https://www.linkedin.com/posts/michele-mattei_meow-stifel-activity-7518529856318701568-TiIh",
+              "date": "2026-10-21T07:01:10+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://tradersunion.com/news/market-voices/show/3901090-meow-money2020-recognition/",
+              "date": "2026-10-21T03:14:05+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.renascence.io/news/120834/stifel-backs-meows-treasury-platform-with-31-6m-series-b",
+              "date": "2026-10-20T14:50:56+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://thefinrate.com/stifel-invests-316-million-in-meow-to-bring-white-label-treasury-tech-to-business-clients/",
+              "date": "2026-10-20T11:35:34+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.fintechfutures.com/venture-capital-funding/meow-lands-31-6m-series-b",
+              "date": "2026-10-19T13:14:13+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://fintechgate.net/254755",
+              "date": "2026-10-18T11:50:35+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.linkedin.com/posts/wilson-sonsini-goodrich-%26-rosati_wilson-sonsini-advises-meow-on-316-million-activity-7517253173754085376-ttzd",
+              "date": "2026-10-17T15:45:18+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.wsgr.com/en/insights/wilson-sonsini-advises-meow-on-dollar316-million-series-b-and-strategic-partnership.html",
+              "date": "2026-10-16T16:29:00+00:00",
+              "is_primary": false
+            }
+          ]
+        }
+      ]
+    },
+    "meta": {
+      "total_count": 15,
+      "page": 0,
+      "page_size": 3
+    }
+  },
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "price": {
+    "type": "PER_RESULT",
+    "amount": {
+      "value": 0.06,
+      "currency": "USD"
+    }
+  },
+  "billing": {
+    "reportedCost": {
+      "currency": "USD",
+      "value": 180000,
+      "unit": "MICRO_DOLLAR"
+    }
+  },
+  "resultCount": 3,
+  "billedUnits": 3,
+  "createdAt": "2026-10-22T04:00:12.239Z",
+  "completedAt": "2026-10-22T04:00:15.253Z",
+  "hints": {
+    "retrieve the response later": "monid runs get -r 01M5GW8E7DDWBJP507TCZFQ76G",
+    "resolve an industry name into a permalink": "monid run -p fundable -e /industry/search -i '<BODY>' --query '<QUERY_PARAMS>' --path '<PATH_PARAMS>'  # industries and super_categories take exact permalinks",
+    "get the investor lineup of a returned deal": "monid run -p fundable -e /deals/{id}/investors -i '<BODY>' --query '<QUERY_PARAMS>' --path '<PATH_PARAMS>'  # pass the deal id as the path param",
+    "resolve a location name into a permalink": "monid run -p fundable -e /location/search -i '<BODY>' --query '<QUERY_PARAMS>' --path '<PATH_PARAMS>'  # locations takes exact permalinks, not names"
+  },
+  "notes": [
+    "Update available: 0.1.7 → 0.1.8. Run `npm update -g @monid-ai/cli` to update monid-cli. Download the latest version of skill at https://monid.ai/SKILL.md."
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "runId": "01M5GQ24VKJW422ZQHP4KB148B",
+  "provider": "anyapi",
+  "providerName": "AnyAPI",
+  "endpoint": "/email_finding.quickenrich",
+  "status": "COMPLETED",
+  "input": {
+    "body": {
+      "companyDomain": "fluidstack.io",
+      "firstName": "Jamie",
+      "lastName": "Doe"
+    }
+  },
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "price": {
+    "type": "PER_UNIT_MATRIX",
+    "amount": {
+      "value": 0.0072,
+      "currency": "USD"
+    },
+    "selectors": [
+      {
+        "label": "Route",
+        "key": "route",
+        "in": "body"
+      }
+    ],
+    "variants": [
+      {
+        "when": {
+          "route": "quickenrich"
+        },
+        "price": {
+          "type": "PER_CALL",
+          "amount": {
+            "value": 0.0072,
+            "currency": "USD"
+          }
+        },
+        "label": "quickenrich · 100% uptime · 1.2 s median"
+      }
+    ]
+  },
+  "cost": {
+    "value": 0,
+    "currency": "USD"
+  },
+  "resultCount": 0,
+  "billedUnits": 0,
+  "createdAt": "2026-10-22T02:29:23.234Z",
+  "startedAt": "2026-10-22T02:29:23.402Z",
+  "completedAt": "2026-10-22T02:29:25.750Z",
+  "hints": {
+    "retrieve the response later": "monid runs get -r 01M5GQ24VKJW422ZQHP4KB148B"
+  },
+  "output": {
+    "found": false,
+    "data": null,
+    "reason": "not_found"
+  },
+  "notes": [
+    "Update available: 0.1.7 → 0.1.8. Run `npm update -g @monid-ai/cli` to update monid-cli. Download the latest version of skill at https://monid.ai/SKILL.md."
+  ]
+}

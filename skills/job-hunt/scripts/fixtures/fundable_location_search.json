@@ -1,0 +1,86 @@
+{
+  "runId": "01M5GW7TFEB0AT5VKJ5NWTJ0E4",
+  "provider": "fundable",
+  "endpoint": "/location/search",
+  "status": "COMPLETED",
+  "output": {
+    "success": true,
+    "data": {
+      "locations": [
+        {
+          "permalink": "new-york-saint-catherine",
+          "name": "New York",
+          "location_type": "CITY"
+        },
+        {
+          "permalink": "new-york-new-york",
+          "name": "New York",
+          "location_type": "CITY"
+        },
+        {
+          "permalink": "new-york-chiapas",
+          "name": "New York",
+          "location_type": "CITY"
+        },
+        {
+          "permalink": "new-york-united-states",
+          "name": "New York",
+          "location_type": "STATE"
+        },
+        {
+          "permalink": "new-york-lincolnshire",
+          "name": "New York",
+          "location_type": "CITY"
+        },
+        {
+          "permalink": "new-york-santa-barbara",
+          "name": "New York",
+          "location_type": "CITY"
+        },
+        {
+          "permalink": "new-york-mills-new-york",
+          "name": "New York Mills",
+          "location_type": "CITY"
+        },
+        {
+          "permalink": "west-new-york-new-jersey",
+          "name": "West New York",
+          "location_type": "CITY"
+        }
+      ],
+      "totalCount": 8
+    },
+    "meta": {
+      "page": 0,
+      "page_size": 1
+    }
+  },
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "price": {
+    "type": "PER_CALL",
+    "amount": {
+      "value": 0,
+      "currency": "USD"
+    }
+  },
+  "billing": {
+    "reportedCost": {
+      "currency": "USD",
+      "value": 0,
+      "unit": "MICRO_DOLLAR"
+    }
+  },
+  "resultCount": 1,
+  "billedUnits": 1,
+  "createdAt": "2026-10-22T03:59:52.038Z",
+  "completedAt": "2026-10-22T03:59:53.896Z",
+  "hints": {
+    "retrieve the response later": "monid runs get -r 01M5GW7TFEB0AT5VKJ5NWTJ0E4",
+    "search funding rounds in the resolved location": "monid run -p fundable -e /deals -i '<BODY>' --query '<QUERY_PARAMS>' --path '<PATH_PARAMS>'  # pass the permalink under company.locations"
+  },
+  "notes": [
+    "Update available: 0.1.7 → 0.1.8. Run `npm update -g @monid-ai/cli` to update monid-cli. Download the latest version of skill at https://monid.ai/SKILL.md."
+  ]
+}

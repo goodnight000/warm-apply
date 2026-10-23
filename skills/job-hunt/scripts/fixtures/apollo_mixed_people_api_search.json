@@ -1,0 +1,87 @@
+{
+  "runId": "FIXTURE",
+  "provider": "apollo",
+  "endpoint": "/mixed_people/api_search",
+  "status": "COMPLETED",
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "cost": {
+    "value": 0,
+    "currency": "USD"
+  },
+  "output": {
+    "total_entries": 3,
+    "people": [
+      {
+        "id": "687bc8108bacff000191d721",
+        "first_name": "Person0",
+        "last_name_obfuscated": "Do***e",
+        "title": "Senior Recruiter",
+        "last_refreshed_at": "2026-09-29T05:56:35.000+00:00",
+        "has_email": false,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_direct_phone": "Yes",
+        "organization": {
+          "name": "Fluidstack",
+          "has_industry": true,
+          "has_phone": false,
+          "has_city": true,
+          "has_state": true,
+          "has_country": true,
+          "has_zip_code": true,
+          "has_revenue": true,
+          "has_employee_count": true
+        }
+      },
+      {
+        "id": "57e13021a6da987d68a4b2aa",
+        "first_name": "Person1",
+        "last_name_obfuscated": "Do***e",
+        "title": "Technical Program Manager, Data Center Design Engineering & Delivery",
+        "last_refreshed_at": "2026-10-15T11:07:47.845+00:00",
+        "has_email": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_direct_phone": "Yes",
+        "organization": {
+          "name": "Fluidstack",
+          "has_industry": true,
+          "has_phone": false,
+          "has_city": true,
+          "has_state": true,
+          "has_country": true,
+          "has_zip_code": true,
+          "has_revenue": true,
+          "has_employee_count": true
+        }
+      },
+      {
+        "id": "631db62360ab2900011b8062",
+        "first_name": "Person2",
+        "last_name_obfuscated": "Do***e",
+        "title": "Design Manager, Data Center Design Engineering & Delivery",
+        "last_refreshed_at": "2026-09-15T03:14:56.000+00:00",
+        "has_email": false,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_direct_phone": "Yes",
+        "organization": {
+          "name": "Fluidstack",
+          "has_industry": true,
+          "has_phone": false,
+          "has_city": true,
+          "has_state": true,
+          "has_country": true,
+          "has_zip_code": true,
+          "has_revenue": true,
+          "has_employee_count": true
+        }
+      }
+    ]
+  }
+}

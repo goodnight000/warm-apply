@@ -1,0 +1,163 @@
+{
+  "runId": "FIXTURE",
+  "provider": "fundable",
+  "endpoint": "/company",
+  "status": "COMPLETED",
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "cost": {
+    "value": 0.06,
+    "currency": "USD"
+  },
+  "output": {
+    "success": true,
+    "data": {
+      "company": {
+        "id": "1abf9e67-c016-4abc-aa4b-e3eb1fc9a0e8",
+        "name": "Fluidstack",
+        "legal_name": "FluidStack Ltd.",
+        "guru_permalink": "fluidstack",
+        "domain": "fluidstack.io",
+        "region": "New York",
+        "short_description": "FluidStack is a neocloud infrastructure company that operates a marketplace for third-party GPUs and a network of GPU-focused data centers for AI compute.",
+        "long_description": "FluidStack operates a two-pronged business: a marketplace that connects users with third-party GPU capacity and a network of owned data centers that serve large-scale contracts. The company reported an estimated ARR of $180.0 million for 2024, up from $25.0 million in 2023 (a 620% year-over-year increase), and counts customers including Meta and Honeywell. FluidStack began as a project in Oxford and later moved its headquarters to New York to be closer to capital and enterprise clients. It has active projects in Iceland, the U.S. (including partnerships with TeraWulf and Cipher Mining), and a planned large-scale facility in France tied to national AI initiatives. The company has pursued both equity rounds (seed in 2019, Series A in 2025, a January 2026 round) and large secured debt arrangements, including up to $10.0 billion from Macquarie collateralized by GPUs. A reported $50.0 billion contract with Anthropic is cited as the key driver for its current fundraising and valuation discussions.",
+        "operating_status": "active",
+        "founded_date": null,
+        "acquired": false,
+        "num_employees": "101-250",
+        "linkedin": "https://www.linkedin.com/company/fluidstack",
+        "twitter": "https://x.com/fluidstackio",
+        "facebook": "https://www.facebook.com/FluidStack-311052399795495",
+        "pitchbook": "https://pitchbook.com/profiles/company/232251-04",
+        "crunchbase": "https://www.crunchbase.com/organization/fluidstack",
+        "address": "New York, New York, United States, North America",
+        "ipo_status": "private",
+        "num_funding_rounds": 6,
+        "num_investors": 9,
+        "total_raised": 7357700000,
+        "latest_valuation_usd": 18000000000,
+        "latest_valuation_date": "2026-09-28T04:47:55.000Z",
+        "industries": [
+          {
+            "permalink": "ai-infrastructure",
+            "name": "AI Infrastructure"
+          },
+          {
+            "permalink": "artificial-intelligence",
+            "name": "Artificial Intelligence (AI)"
+          },
+          {
+            "permalink": "cloud-computing",
+            "name": "Cloud Computing"
+          },
+          {
+            "permalink": "cloud-storage",
+            "name": "Cloud Storage"
+          },
+          {
+            "permalink": "generative-ai",
+            "name": "Generative AI"
+          },
+          {
+            "permalink": "gpu",
+            "name": "GPU"
+          },
+          {
+            "permalink": "information-technology-dbca",
+            "name": "Information Technology"
+          },
+          {
+            "permalink": "machine-learning",
+            "name": "Machine Learning"
+          },
+          {
+            "permalink": "private-cloud",
+            "name": "Private Cloud"
+          },
+          {
+            "permalink": "software",
+            "name": "Software"
+          }
+        ],
+        "location": {
+          "region": {
+            "name": "North America",
+            "permalink": "north-america"
+          },
+          "country": {
+            "name": "United States",
+            "permalink": "united-states"
+          },
+          "state": {
+            "name": "New York",
+            "permalink": "new-york-united-states"
+          },
+          "city": {
+            "name": "New York",
+            "permalink": "new-york-new-york"
+          }
+        },
+        "latest_deal": {
+          "id": "b2686d2d-35a7-4b4b-84b1-27b77eefa479",
+          "type": "DEBT_FINANCING",
+          "total_round_raised": 5000000000,
+          "date": "2026-09-12T13:39:44.000Z",
+          "extension": false,
+          "pre": false,
+          "intermediate": "NONE",
+          "description": {
+            "short_description": "Fluidstack, a cloud-computing-for-AI startup, raised $1.5 billion in a round led by Jane Street at an $18 billion valuation.",
+            "long_description": "Fluidstack has completed a $1.5 billion financing led by Jane Street that valued the company at about $18 billion. The company previously raised $830 million earlier in the year in a round led by Situational Awareness, so cumulative recent private capital is substantial. In addition to private rounds, Fluidstack is negotiating a potential $5 billion loan from the Pentagon’s Office of Strategic Capital aimed at strengthening U.S. production and availability of components for AI data-center infrastructure rather than directly funding new data-center construction. Erebor Bank is advising Fluidstack in seeking federal financing, and Jane Street and Situational Awareness are notable participants in its private-capital structure. Fluidstack has also secured multi-year contracts and partnerships with large AI customers including Google and Anthropic. Google has provided access to its tensor processing units and guaranteed some data-center leases, which has helped lower Fluidstack’s cost of debt. The company has shifted its headquarters from London (founded 2017) to New York and concentrated infrastructure activities in the U.S., with about 700 employees in the U.S."
+          },
+          "investors": [
+            "628cb560-932c-495b-a8fa-24aad5442554"
+          ],
+          "angel_investor_ids": [],
+          "financings": [
+            {
+              "id": "97e2b3dc-1565-42f3-9686-97fa45ddaa3a",
+              "type": "DEBT_FINANCING",
+              "size_usd": 5000000000,
+              "size_native": 5000000000,
+              "currency": "usd"
+            }
+          ],
+          "articles": [
+            {
+              "link": "https://techtalking.it/pentagono-entra-filiera-ia-fluidstack/",
+              "date": "2026-09-12T13:39:44+00:00",
+              "is_primary": true
+            },
+            {
+              "link": "https://x.com/i/status/2098485189102203201",
+              "date": "2026-09-11T00:53:58+00:00",
+              "is_primary": false
+            },
+            {
+              "link": "https://www.techtimes.com/articles/326746/20260905/fluidstack-closes-15b-revenue-soars-18m-660m-projected-while-owning-zero-chips.htm",
+              "date": "2026-09-05T16:07:16+00:00",
+              "is_primary": false
+            }
+          ]
+        },
+        "all_investor_ids": [
+          "0148245c-be83-4647-873b-9fd835cc10d3",
+          "0fa5e898-ecc7-4ad2-a362-814bba36f67f",
+          "177e7de3-671f-496a-9860-3357ca3913a4",
+          "3b125b3a-a8ca-4955-b9e8-60281bf7602f",
+          "628cb560-932c-495b-a8fa-24aad5442554",
+          "76884170-b10e-40f7-9d43-787e27985c11",
+          "c55a986c-a57f-4b69-b87d-48dac1628b87",
+          "c8dc31cd-4e1a-41ac-803d-0418864f240c",
+          "d6260b48-d17b-48ad-a4ce-766c7daabcb3"
+        ],
+        "similarity": null
+      }
+    },
+    "meta": {
+      "page": 0,
+      "page_size": 1
+    }
+  }
+}

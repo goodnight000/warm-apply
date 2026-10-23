@@ -1,0 +1,440 @@
+{
+  "runId": "01M5GPXM3TDWK8SHX6EE48X2J6",
+  "provider": "anyapi",
+  "providerName": "AnyAPI",
+  "endpoint": "/linkedin.jobs",
+  "status": "COMPLETED",
+  "input": {
+    "body": {
+      "query": "AI engineer",
+      "location": "San Francisco",
+      "postedLimit": "week",
+      "salary": "160k+",
+      "sortBy": "date"
+    }
+  },
+  "providerResponse": {
+    "httpStatus": 200
+  },
+  "price": {
+    "type": "PER_UNIT_MATRIX",
+    "amount": {
+      "value": 0,
+      "currency": "USD"
+    },
+    "selectors": [
+      {
+        "label": "Route",
+        "key": "route",
+        "in": "body"
+      }
+    ],
+    "variants": [
+      {
+        "when": {
+          "route": "octopus"
+        },
+        "price": {
+          "type": "PER_RESULT",
+          "amount": {
+            "value": 0,
+            "currency": "USD"
+          },
+          "flatFee": {
+            "value": 0.0286,
+            "currency": "USD"
+          }
+        },
+        "label": "octopus · 99.4% uptime · 8.3 s median"
+      }
+    ]
+  },
+  "cost": {
+    "value": 0.0286,
+    "currency": "USD"
+  },
+  "resultCount": 1,
+  "billedUnits": 1,
+  "createdAt": "2026-10-22T02:26:55.168Z",
+  "startedAt": "2026-10-22T02:26:55.403Z",
+  "completedAt": "2026-10-22T02:27:10.277Z",
+  "hints": {
+    "retrieve the response later": "monid runs get -r 01M5GPXM3TDWK8SHX6EE48X2J6"
+  },
+  "output": {
+    "data": {
+      "items": [
+        {
+          "applicantTrackingSystem": "LinkedIn",
+          "applicants": 25,
+          "applyUrl": "",
+          "benefits": [
+            "401(k)",
+            "Medical insurance",
+            "Vision insurance",
+            "Dental insurance"
+          ],
+          "city": "San Francisco",
+          "company": {
+            "description": "Harnham provides specialist Data and AI recruitment and staffing services, along with bespoke training solutions, across multiple industry verticals, operating in the UK, the USA and EU - contact us today to discuss your requirements: info@harnham.com \n\nOur recruitment and talent teams cover all aspects of the data and AI pipeline, from collection to consumption, across multiple data roles and functions. \n\nWhether you need full-time staff, contract talent, specialized training, Data-qualified graduates, or C-suite executives, Harnham Group is equipped to fulfill all your data talent requirements.\n\nOur five core services:\n\n* ATD - Rockborne – our graduate development arm – deploys expertly trained data consultants, who have gone through an intensive 12-week data training programme. After two years in the scheme, your consultant could become a \n\n* Contract / C2C / Freelance: Whether you're addressing a talent shortage, augmenting a project team, or encountering resource gaps, our specialist consultants offer bespoke interim talent solutions to address your unique challenges and drive success.\n\n* Full-Time / Direct Hiring: From early career professionals to senior management, our comprehensive services enable you to unearth outstanding data talent across various specializations, ensuring your organization thrives in the data-driven era.\n\n* Executive Search: With our dedicated executive search team and an extensive network encompassing the director to C-suite level, we assist both global corporations and ambitious startups in securing top-tier leadership talent to accomplish their goals.\n\n* GenAI, Prompt, LLM Training: Elevate your team's data expertise with our all-encompassing training programs covering essential tools and technologies such as Python, SQL, Machine Learning, LLM’s and AI. Highly bespoke, customised to your team learning requirements and budgets.",
+            "employeeCount": 199,
+            "followerCount": 1182147,
+            "id": "280603",
+            "linkedinUrl": "https://www.linkedin.com/company/harnham",
+            "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQFDh4hZFsU8qA/company-logo_400_400/company-logo_400_400/0/1732180104917/harnham_logo?e=1794441600&v=beta&t=QmG-o2QVsxLAXhuen36c3QUyPZntIJ8XL_cjNqd1HcA",
+            "name": "Harnham",
+            "universalName": "harnham",
+            "website": "http://www.harnham.com"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792603557,
+          "descriptionText": "AI ResearcherSan Francisco, CA (Hybrid - 3-4 Days/Week Onsite)Compensation: $350,000 - $450,000 Base + Equity\nAbout the CompanyWe are building one of the world's largest creator-powered data platforms, partnering with nearly one million creators to provide high-quality, ethically sourced multimodal datasets that power the next generation of artificial intelligence.Our customers include leading AI organizations developing cutting-edge generative models across image, video, 3D, and creative domains. As the AI industry increasingly recognizes that model performance is driven as much by data quality as algorithmic innovation, we are expanding our internal Data Lab to proactively discover, define, and deliver the datasets that unlock the next generation of model capabilities.\nThe OpportunityWe are seeking an Applied AI Researcher with hands-on experience building, analyzing, and evaluating generative models. This role sits at the intersection of AI research, computer vision, dataset design, and market intelligence.Our platform already has exceptional data collection capabilities. What we need is someone who deeply understands modern generative models and can answer a simple but critical question:\nWhat You'll DoResearch & Model AnalysisAnalyze state-of-the-art generative AI models, architectures, technical reports, research papers, and emerging trends.Evaluate image and video generation systems to identify capability gaps, failure modes, and performance bottlenecks.Develop hypotheses around how training data composition influences model behavior and outcomes.Stay current with advances across computer vision, diffusion models, multimodal systems, generative AI, and foundational models.\nDataset Strategy & DesignDesign datasets that address identified model limitations.Define data schemas, metadata standards, annotation requirements, and quality frameworks.Determine optimal dataset composition, coverage, diversity, and evaluation methodologies.Create technical specifications that enable datasets to be built and scaled efficiently.\nCross-Functional CollaborationPartner closely with Product teams to translate research findings into actionable dataset requirements.Collaborate with Sales and customer-facing teams to understand market needs and emerging opportunities.Engage directly with researchers and technical stakeholders at leading AI organizations.Participate in customer conversations and provide subject matter expertise on generative AI and dataset strategy.\nOperational OwnershipDrive datasets from concept through production readiness.Review dataset quality, structure, and effectiveness.Help establish best practices for dataset evaluation and validation.Contribute to the development of scalable processes for future dataset creation efforts.\nRequired QualificationsPhD, in Computer Science, Computer Vision, Machine Learning, Artificial Intelligence, or a related field.2+ years of experience conducting applied AI research or building generative AI systems.Direct experience developing, training, fine-tuning, or evaluating generative models.Strong understanding of how training data impacts model performance.Experience with image generation systems is required.Experience reading, interpreting, and applying findings from academic and industry research.Strong coding skills in Python and familiarity with modern ML frameworks.Exceptional analytical and problem-solving abilities.\nPreferred QualificationsExperience with video generation models.Background in diffusion models, multimodal learning, vision-language models, or foundational AI systems.Experience designing, curating, or evaluating large-scale datasets.Prior work at leading AI labs, research organizations, or generative AI companies.Experience interacting directly with external customers, partners, or research stakeholders.Published research with demonstrated applied impact.\nIdeal BackgroundsWe are particularly interested in candidates from organizations working on:Generative image or video modelsComputer vision researchMultimodal AI systemsFoundation modelsApplied AI research organizationsResearch engineering teams bridging science and product development\nWhat Success Looks LikeWithin your first year, you will:Identify high-value opportunities where targeted datasets can improve model capabilities.Develop repeatable frameworks for evaluating model limitations and data requirements.Become a trusted technical partner to leading AI organizations.Help define the company's long-term strategy around multimodal dataset innovation.Influence the future development of state-of-the-art generative AI systems through better data.\nWhy JoinWork on some of the most important challenges in modern AI.Collaborate directly with leading AI organizations and researchers.Operate at the intersection of generative AI, computer vision, and dataset innovation.Shape the future of multimodal AI without being limited to a single model or research agenda.Significant compensation and equity upside.Opportunity to influence the strategic direction of a rapidly growing business operating at the center of the AI ecosystem.\n",
+          "easyApplyUrl": "https://www.linkedin.com/job-apply/4482141187",
+          "employmentType": "full_time",
+          "experienceLevel": "Mid-Senior level",
+          "expireUtc": 1795195557,
+          "id": "4482141187",
+          "industries": [
+            "Technology, Information and Media"
+          ],
+          "jobState": "LISTED",
+          "location": "San Francisco Bay Area",
+          "remote": false,
+          "salary": {
+            "max": 450000,
+            "min": 350000,
+            "text": "350,000 - 450,000 USD"
+          },
+          "state": "California",
+          "title": "AI Researcher",
+          "url": "https://www.linkedin.com/jobs/view/4482141187/",
+          "views": 0,
+          "workplaceType": "hybrid"
+        },
+        {
+          "applicantTrackingSystem": "",
+          "applicants": 199,
+          "applyUrl": "https://app.careerpuck.com/job-board/trustly?ashby_jid=d1eea385-5687-4bd5-88e6-8f254c632b65&utm_source=LinkedIn",
+          "benefits": [],
+          "city": "San Francisco",
+          "company": {
+            "description": "Trustly was launched in 2008 and has grown rapidly over the past 16 years to become a global leader in Open Banking Payment solutions. With a mission to make online payments as seamless as possible, Trustly offers an innovative payment platform, bridging the gap between consumers and merchants. Its technology ensures that transactions are processed in real-time, providing both speed and security for all parties involved.\n\nTrustly's dedication to revolutionizing the payments industry is reflected in its collaborations with major brands such as PayPal, eBay, and Hargreaves Lansdown in Europe and FanDuel, T-Mobile, and Coinbase in North America. To date, Trustly has transformed the performance and experience of payments for over 9,000 merchants in 30+ markets, connecting them to 650+ million consumers through 12,000 banks.\n\nTrustly is a licensed Payment Institution under the second payment services directive (PSD2). It operates under the supervision of the Swedish Financial Supervisory Authority in the EU, EEA and the Financial Conduct Authority in the UK. In the US, Trustly is state-regulated as required to serve its target markets.",
+            "employeeCount": 830,
+            "followerCount": 84146,
+            "id": "2372346",
+            "linkedinUrl": "https://www.linkedin.com/company/trustly",
+            "logo": "https://media.licdn.com/dms/image/v2/D4D0BAQHA341YiwaGhg/company-logo_400_400/company-logo_400_400/0/1690194366981/trustly_logo?e=1794441600&v=beta&t=MzzIwqNciu5jylQmOB5sEh2hhuyFbJETdh1Ga9vl2sY",
+            "name": "Trustly",
+            "universalName": "trustly",
+            "website": "https://trustly.com/"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792586648,
+          "descriptionText": "Who We Are\n\nAt Trustly, we're building a smarter, faster, and more secure financial future by revolutionizing the world of payments. As a global leader in Open Banking Payments, we are establishing Pay by Bank as the new standard at checkout, providing unparalleled freedom, speed, and ease to millions of consumers and merchants worldwide.\n\nOur Ambition: To build the world’s most disruptive payment network and redefine what the payment experience should feel like.\n\nTrustly is a global team of innovators, collaborators, and doers. If you are driven by a strong sense of purpose and thrive in a dynamic, entrepreneurial, and high-growth environment, join us and be part of a team that’s transforming the way the world pays.\n\nAbout The Ai Enablement Team\n\nThe AI Enablement team sits at the intersection of technology, product, and people — responsible for accelerating Trustly's capacity to build and scale AI-powered capabilities across the organization. The team partners deeply with Engineering, Product, Data, and Operations to identify high-leverage opportunities, drive adoption of AI tooling, and establish the frameworks that let Trustly move faster and smarter.\n\nAbout The Role\n\nAs a Staff AI Enablement Engineer, you'll be one of the most technically influential individual contributors at Trustly — part of the special forces team bringing agentic workflows and the productivity gains they unlock to every function in the company. Your users aren't just engineers: they're teammates in finance, legal, operations, sales, and beyond, all trying to figure out how to actually work with AI. You'll design and build the internal platforms, evaluation frameworks, and tooling that make it easier and faster for any team at Trustly to adopt agentic ways of working. This is a high-autonomy, high-ownership role for an experienced engineer who loves being in the weeds on hard technical problems and then scaling their solutions across an entire organization.\n\nWhat You'll Do\n\nDesign, build, and maintain Trustly's core AI platform — including LLM integration infrastructure, prompt management systems, evaluation pipelines, and agentic workflow tooling.Partner with product and engineering teams across Trustly to embed AI capabilities into core products: payments, risk decisioning, fraud detection, developer tooling, and customer-facing surfaces.Establish and own evaluation standards for AI systems — building robust testing frameworks that assess quality, safety, latency, cost, and reliability at scale.Lead technical discovery and prototyping on high-ambiguity problems: evaluate new foundation models, agentic architectures, and toolchains; produce clear recommendations grounded in data.Drive internal AI adoption by creating reusable libraries, patterns, documentation, and enablement resources that reduce the barrier for engineering teams to build with AI.Collaborate with the VP of AI Enablement and cross-functional stakeholders to influence the technical roadmap and represent engineering constraints and opportunities in strategic conversations.\n\nWho You Are\n\n8+ years of software engineering experience, with at least 3 years focused on AI/ML systems, LLM infrastructure, or applied ML in production environments.Deep hands-on experience building with LLMs and modern AI stacks — including RAG, fine-tuning, prompt engineering, function calling, and multi-step agentic workflows.Strong software engineering fundamentals: you write clean, production-grade code and design systems that are observable, testable, and maintainable.Experience operating at Staff+ scope — driving technical decisions that span multiple teams, mentoring other engineers, and leading by influence rather than authority.Track record of taking AI capabilities from prototype to production in a high-reliability environment — understanding the gap between a demo and something that runs at scale.Comfortable with ambiguity: you can scope and execute on poorly-defined problems, communicate tradeoffs clearly, and move quickly without sacrificing quality.\n\nApplications for this role are accepted on an ongoing basis.\n\nSALARY RANGES IN US-BASED ROLE POSTING\n\nOur salary ranges are determined by role, level, and location. The range displayed on each job posting reflects the minimum and maximum target for new hire salaries for the position across all US locations. Within the range, individual pay is determined by work location and additional factors, including job-related skills, experience, and relevant education or training. Recruiters can share more information with applicants about the specific salary range for preferred locations during the hiring process. Please note that the compensation details listed in US role postings reflect the base salary only and do not include other perks and benefits.\n\nWhat We Offer\n\nAt Trustly, you’ll have the chance to solve meaningful challenges alongside some of the brightest minds in FinTech. Together, we’re shaping the future of payments in an environment that celebrates curiosity, collaboration, and innovation. You'll be challenged and empowered to grow, making a real impact every step of the way.\n\nOur team is as diverse as the global footprint we serve, with colleagues across Silicon Valley, the U.S., Canada, Brazil, Europe, and beyond. At Trustly, we foster a workplace where everyone feels they belong—a place where teamwork thrives, ideas flourish, and we never forget to have fun along the way.\n\nWe Offer Innovative Perks And Benefits Packages That Include\n\n Flexible paid time off & generous PTO accrual plans Comprehensive medical, dental, vision, and other insurances FSA & HSA plans for medical and dependent care Home office set-up allowance Internet stipend Retirement plan match for 401k and RRSP Gender-neutral paid parental leave, and more!\n\n(The benefits and total compensation packages outlined above are for full-time employees; some exclusions apply for temporary positions.)\n\nAt Trustly, we embrace and celebrate diversity of all forms and the value it brings to our employees and customers. We are proud and committed to being an Equal Opportunity Employer and believe an open and inclusive environment enables people to do their best work. All decisions regarding hiring, advancement, and any other aspects of employment are made solely on the basis of qualifications, merit, and business need.\n\nCompensation Range: $250K - $350K\n\n",
+          "easyApplyUrl": "",
+          "employmentType": "full_time",
+          "experienceLevel": "",
+          "expireUtc": 1797312391,
+          "id": "4455243014",
+          "industries": [
+            "Financial Services"
+          ],
+          "jobState": "LISTED",
+          "location": "San Francisco Bay Area",
+          "remote": false,
+          "salary": {
+            "max": 350000,
+            "min": 250000,
+            "text": "250,000 - 350,000 USD"
+          },
+          "state": "California",
+          "title": "Staff AI Enablement Engineer",
+          "url": "https://www.linkedin.com/jobs/view/4455243014/",
+          "views": 0,
+          "workplaceType": "hybrid"
+        },
+        {
+          "applicantTrackingSystem": "",
+          "applicants": 46,
+          "applyUrl": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=73f568d7-f300-4c97-af4c-df2862da5316&ccId=19000101_000001&lang=en_US&jobId=570740&rb=Linkedin",
+          "benefits": [],
+          "city": "San Francisco",
+          "company": {
+            "description": "At HED, we believe great design is about more than aesthetics—it’s about solving complex challenges, enriching communities, and building a better future.  \n  \nAs an integrated design firm, we combine architecture, engineering, consulting, and planning to deliver sustainable, impactful solutions. Guided by a shared purpose to create positive change, we foster collaboration, diversity, and continuous learning, where bold ideas and fresh perspectives drive innovation.  \n  \nWith nine offices across the U.S., we pair national resources with localized expertise to serve diverse markets, including education (Higher Ed and Pre K-12), healthcare, mission critical, workplace, housing and mixed-use, science and advanced manufacturing, community, and federal and transportation.  \n  \nDiscover how HED advances your world at www.hed.design. ",
+            "employeeCount": 693,
+            "followerCount": 22435,
+            "id": "40532",
+            "linkedinUrl": "https://www.linkedin.com/company/hedintegrateddesign",
+            "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQHmIH5obTlfhA/company-logo_400_400/B4EaAfkgsAKwAY-/0/1787236060291/hedintegrateddesign_logo?e=1794441600&v=beta&t=gOzhaQ831LkzKHabX3SZntYq0vl-Y3BKlWNzEQXcjMA",
+            "name": "HED",
+            "universalName": "hedintegrateddesign",
+            "website": "https://www.hed.design/"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792612494,
+          "descriptionText": "HED is hiring an AI Platform Engineer to develop, evaluate, and improve the AI capabilities that support our people and our practice.\n\nAbout HED\n\nWe are a team that is full of ideas, experience, creativity, passionate opinions, insatiable curiosity, uncompromising integrity, commitment, and skill. Our culture is about aspiration, embracing change and challenges, listening to (and learning from) each other, encouraging continual learning, and inspiring collective growth. As an inclusive, integrated architecture and engineering practice, we value the diversity of perspectives, experiences, abilities, and expertise that advance both the work we do, and the world we share.\n\nPosition Summary\n\nAt HED, we believe the most powerful solutions emerge when expertise, technology, and human insight come together. As a national integrated architecture and engineering firm, we are advancing how artificial intelligence connects knowledge, improves workflows, and empowers our people to deliver exceptional outcomes.\n\nYou will build and optimize production AI solutions, evaluate large language models, improve AI-generated responses, and transform organizational knowledge into secure, accessible, and actionable intelligence.\n\nWorking within our Data & AI team, you will own defined technical initiatives and collaborate with developers, data engineers, and business stakeholders. This role offers opportunities to influence technical decisions and grow into broader platform leadership.\n\nEssential Functions AI Model Evaluation And Performance\n\n Develop and maintain model benchmarking, evaluation datasets, testing methods, and performance baselines across production AI applications.  Evaluate models, prompts, and configurations against response quality, reliability, cost, latency, and risk; document findings and recommend improvements.  Support preproduction validation of model, prompt, and application changes. \n\n Context Engineering and AI Optimization \n\n Develop and optimize retrieval-augmented generation (RAG), retrieval ranking, prompt structures, context management, and caching.  Measure answer quality, token usage, and operating costs; use results to guide improvements.  Collaborate with application developers to improve shared AI capabilities and user experiences. \n\n AI Solution Development and Delivery \n\n Deliver defined AI use cases from requirements and design through implementation, testing, documentation, adoption, and improvement.  Help design workflows that capture and organize employee expertise, skills, and competencies for use in AI-powered applications.  Develop structured data models, skills taxonomies, and knowledge capture workflows; partner with data engineering to integrate governed datasets.  Work with business stakeholders to define requirements, success criteria, and practical solutions. \n\n Data Governance and Responsible AI \n\n Apply privacy, security, data classification, consent, retention, and access-control requirements to AI solutions and datasets.  Support dataset quality, lineage, ownership, documentation, and auditability. \n\n Technical Collaboration and Innovation \n\n Contribute to architecture discussions, technical reviews, coding standards, automated testing, CI/CD, and code reviews.  Use AI-assisted development tools responsibly and share technical knowledge with colleagues.  Evaluate emerging generative AI and agentic technologies for practical application at HED. \n\nRequirements\n\n Approximately 4–6+ years of experience in software engineering, machine learning engineering, data engineering, or a related technical discipline.  Hands-on experience developing, deploying, or supporting LLM applications in production.  Experience implementing AI evaluations, benchmarks, or performance testing.  Working knowledge of RAG, information retrieval, prompt engineering, and context optimization.  Proficiency in Python and SQL, Git, automated testing, and modern software development practices.  Experience with cloud applications, APIs, and data integration workflows.  Understanding of enterprise data governance, privacy, and security.  Ability to independently deliver complex technical assignments and communicate effectively with technical and nontechnical stakeholders. \n\nPreferred Qualifications\n\n Bachelor's degree in Computer Science, Software Engineering, Data Science, Information Systems, or a related field, or equivalent practical experience.  Experience with Azure OpenAI, Amazon Bedrock, Anthropic, or comparable AI platforms.  Familiarity with Databricks, Delta Lake, Unity Catalog, MLflow, or similar platforms.  Experience with AI agents, automated workflows, experiment tracking, or multi-model systems. \n\nPhysical Requirements\n\n Prolonged periods of sitting at a desk and working on a computer.  Must be able to effectively communicate in writing and verbally via phone, video conferencing, and in person.  Visual acuity to perform responsibilities. \n\n Work Environment \n\nWe embrace a hybrid model that promotes both autonomy and collaboration, including the freedom to work from home, with regular in-office days to connect with teammates and build culture.\n\nThe office is a professional, open-space environment designed for collaborative and independent work.\n\nOther Duties\n\nPlease note this job description is not designed to cover or contain a comprehensive listing of activities, duties, or responsibilities that are required of the employee for this job. Duties, responsibilities, and activities may change at any time with or without notice.",
+          "easyApplyUrl": "",
+          "employmentType": "full_time",
+          "experienceLevel": "",
+          "expireUtc": 1795204494,
+          "id": "4479442611",
+          "industries": [
+            "Architecture and Planning",
+            "Accessible Architecture and Design",
+            "Professional Services"
+          ],
+          "jobState": "LISTED",
+          "location": "San Francisco Bay Area",
+          "remote": false,
+          "salary": {
+            "max": 170000,
+            "min": 120000,
+            "text": "120,000 - 170,000 USD"
+          },
+          "state": "California",
+          "title": "AI Platform Engineer",
+          "url": "https://www.linkedin.com/jobs/view/4479442611/",
+          "views": 0,
+          "workplaceType": "hybrid"
+        },
+        {
+          "applicantTrackingSystem": "LinkedIn",
+          "applicants": 169,
+          "applyUrl": "",
+          "benefits": [],
+          "city": "San Francisco",
+          "company": {
+            "description": "Mission Resourcing provides contingency search services for Engineering, Product Management and Life Sciences from hands on engineers and technical leaders up to C level. \nWe typically serve small to mid size companies who can rely on us to supplement their internal staffing efforts or startups in a heavy growth mode but have also worked with larger organizations such as Facebook, Pandora and ServiceNow.  We recruit in Southern California as well as for remote positions across the US and can provide current client sites of reference on request.\n\nThe premise behind Mission Resourcing is to deliver exceptional talent to our clients – every time. Whilst some agencies promise the world and never deliver, we engage with clients on searches within our acknowledged areas of expertise. Clients can effectively ‘outsource’ specific positions to Mission Resourcing confident that they will be delivered upon. Essentially you can anticipate the level of service associated with a retained search firm but at a more reasonable cost.\n\nReferrals are the cornerstone of good recruiting practice. That’s because great people recommend other great people.  At Mission Resourcing we connect clients to the talent we are referred to and that others have already given a seal of approval on.  Ultimately we take pride in helping organizations and people meet their developmental goals.  ",
+            "employeeCount": 2,
+            "followerCount": 4148,
+            "id": "18300977",
+            "linkedinUrl": "https://www.linkedin.com/company/missionresourcing",
+            "logo": "https://media.licdn.com/dms/image/v2/D560BAQH8FGkpL-4hKQ/company-logo_400_400/B56ZwHf5R0HIAc-/0/1769652327821/missionresourcing_logo?e=1794441600&v=beta&t=fdGpMCbrKGrIbow2bhHCh4WKJehOezMDncFDhTz_xDM",
+            "name": "Mission Resourcing LLC",
+            "universalName": "missionresourcing",
+            "website": "http://missionresourcing.com/"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792602489,
+          "descriptionText": "🚀 Hiring: Founding Software Engineer, Customer Experience (Forward Deployed)📍 San Francisco, on-site 5 days a week · Full-time💰 $160K–$230K base + significant equityOur client is an AI-native, seed-stage startup building an AI command center for fleet operations. It’s a single AI agent that connects to and takes action across 10+ systems trucking carriers already use (TMS, telematics, safety, dispatch, maintenance). It’s already live with some of the largest fleets in the US and handles about 70% of back-office tasks on its own.The roleYou’ll own the technical side of enterprise sales and deployment, working directly with the founders, customers and engineering to take agentic AI from demo to production.Lead technical discovery, design POCs, and run tailored demosTravel on-site to customers (~10%) to embed with ops teams, scope integrations, and write code that unblocks dealsScope and run pilots with clear success metrics, and build ROI modelsOwn onboarding end to end: data mapping, workflow configuration, API/webhook integrations, go-liveBring customer feedback back to product and engineering to shape the roadmapWhat they’re looking for1–4 years of full-stack software engineering, ideally at a high-growth B2B companyStrong grasp of APIs, webhooks and system architecture, and you’ve shipped real products end to endHigh agency and comfortable building without a playbookAn engineer who actually wants to talk to customersWilling to travel to customer sitesStack: TypeScript, React, Node.js, Python, SQL, Terraform, agentic AIWhy join: The team is about 10 people, founded by engineers from a leading fleet-tech company and by fleet operators. It’s flat and founder-led, backed by top VCs, and doubling this year.",
+          "easyApplyUrl": "https://www.linkedin.com/job-apply/4481141338",
+          "employmentType": "full_time",
+          "experienceLevel": "Mid-Senior level",
+          "expireUtc": 1795194489,
+          "id": "4481141338",
+          "industries": [
+            "Freight and Package Transportation",
+            "Software Development"
+          ],
+          "jobState": "LISTED",
+          "location": "San Francisco Bay Area",
+          "remote": false,
+          "salary": {
+            "max": 230000,
+            "min": 160000,
+            "text": "160,000 - 230,000 USD"
+          },
+          "state": "California",
+          "title": "Software Engineer",
+          "url": "https://www.linkedin.com/jobs/view/4481141338/",
+          "views": 0,
+          "workplaceType": "on_site"
+        },
+        {
+          "applicantTrackingSystem": "LinkedIn",
+          "applicants": 60,
+          "applyUrl": "",
+          "benefits": [],
+          "city": "San Francisco",
+          "company": {
+            "description": "Founded by Dan Kirkpatrick, Through the Noise Talent (TTN Talent) brings over 20 years of technology and engineering recruitment experience, including hiring AI talent as early as 2005 - long before AI hiring became mainstream. \n\nTTN Talent supports growing businesses hiring across AI, machine learning, and frontier research roles, with a focus on companies that value a more thoughtful and precise approach to hiring.\n\nIn a market crowded with high application volumes, inflated signals, and AI-generated “perfect” resumes, TTN Talent helps clients cut through the noise with clear advice, rigorous candidate qualification, and a genuine understanding of what great hiring looks like in these specialist markets.\n\nTo keep every search focused, TTN Talent typically works on only 3 to 5 assignments at any one time.\n\nThrough the noise. To the right hire. ",
+            "employeeCount": 2,
+            "followerCount": 5051,
+            "id": "112948908",
+            "linkedinUrl": "https://www.linkedin.com/company/ttn-talent",
+            "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQG4tY-w1Gs-1w/company-logo_400_400/B4EZ2S.5YpHUAc-/0/1776287455290?e=1794441600&v=beta&t=rKlES7z0-RrG1RLUvN_qoW61Q3_K2aI98kyJtaOLVbE",
+            "name": "TTN Talent",
+            "universalName": "ttn-talent",
+            "website": "https://ttn-talent.com/"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792620729,
+          "descriptionText": "Do you have hands-on experience working with LLMs across post-training, evaluations, inference or ML infrastructure?Have you built or owned systems involving RL environments, evals, training runs, model serving or continual learning?Are you a strong hands-on engineer with Python / PyTorch and experience taking technical work from experimentation through to production?Have you worked on areas such as SFT, preference optimisation, reinforcement learning, model serving, GPU infrastructure or inference optimisation?Do you have experience at an AI-native startup, frontier AI company or strong ML research environment?Are you comfortable joining a very small technical team where you will have significant ownership and work directly with the founders?\nIf you answer yes to the above, then this confidential role could be the one for you.\nThis is a rare opportunity to join an early-stage AI company and, depending on your background, you could focus more heavily on post-training research, research engineering or ML / inference infrastructure, working across areas such as evaluations, RL environments, training, model serving and continual learning.\nThe roles are based on-site in the San Francisco Bay Area, 5 days per week. Salary on offer is $200,000 to $350,000 depending on experience and specialism.",
+          "easyApplyUrl": "https://www.linkedin.com/job-apply/4482188006",
+          "employmentType": "full_time",
+          "experienceLevel": "Mid-Senior level",
+          "expireUtc": 1795212729,
+          "id": "4482188006",
+          "industries": [
+            "Staffing and Recruiting"
+          ],
+          "jobState": "LISTED",
+          "location": "San Francisco Bay Area",
+          "remote": false,
+          "salary": {
+            "max": 350000,
+            "min": 200000,
+            "text": "200,000 - 350,000 USD"
+          },
+          "state": "California",
+          "title": "AI/ML Engineer",
+          "url": "https://www.linkedin.com/jobs/view/4482188006/",
+          "views": 0,
+          "workplaceType": "on_site"
+        },
+        {
+          "applicantTrackingSystem": "",
+          "applicants": 40,
+          "applyUrl": "https://click.appcast.io/t/YJWqvl6iEJlf4czsvsAU1s4qseZWhawxHg493lgUO4DbHQ3Msn31ueNyn6RuZ72U?source=LinkedIn",
+          "benefits": [],
+          "city": "Sunnyvale",
+          "company": {
+            "description": "More than 60 years ago, Sam Walton opened the first Walmart in Rogers, Arkansas. Today, we’re a people-led, tech-powered omnichannel retailer dedicated to helping people save money and live better all around the world.\n\nOur 2.1 million associates are the engine behind what we do — serving customers and members in communities spanning 19 countries, in stores and clubs, online and through a supply chain built for speed and scale.\n\nWe’re committed to creating clear pathways for associates to learn, grow and advance. Whether you’re starting your first job or bringing years of experience, you’ll find room to grow, learn new skills and build a career with purpose. We’re proud to invest in our people and foster a culture grounded in respect, integrity, service and striving for excellence.\n\nRecognized as a Fortune 100 Best Companies to Work For® (2025) and Great Place To Work®-Certified™ , we’re proud of what we’re building together.",
+            "employeeCount": 506932,
+            "followerCount": 5216818,
+            "id": "2646",
+            "linkedinUrl": "https://www.linkedin.com/company/walmart",
+            "logo": "https://media.licdn.com/dms/image/v2/D560BAQHZkPdlecGssw/company-logo_400_400/company-logo_400_400/0/1736779000209/walmart_logo?e=1794441600&v=beta&t=bdj32hRK4xA7GWbJ6nZBa_U2qLjEmmfjxeeK8NRiOhQ",
+            "name": "Walmart",
+            "universalName": "walmart",
+            "website": "http://careers.walmart.com/"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792581475,
+          "descriptionText": "Position Summary...\n\nWhat you'll do...Role summary:\n\nJoin Walmart as a Staff Software Engineer to lead the design, development, and delivery of scalable platform capabilities, including infrastructure, tooling, and AI/ML frameworks. This role drives the full software lifecycle, ensuring alignment with architectural best practices and business objectives. The successful candidate will mentor engineering teams, collaborate across functions, and apply data-driven decision-making to solve complex problems. Emphasizing innovation, technical ownership, and continuous improvement, this position supports Walmart’s commitment to operational excellence and advancing technology solutions that enhance productivity and customer experience.\n\nAbout the team:\n\nWalmart Fulfillment Services (WFS) delivers comprehensive fulfillment solutions for Walmart Marketplace sellers, combining scale, quality, and operational excellence. The team collaborates closely with Engineering, Product, Business, and Analytics partners to develop innovative supply chain capabilities, including streamlined inventory intake, preferred carrier programs, and personalized forecasting. As a Staff Software Engineer, you will contribute to building scalable, high-performance systems that support seller growth and enhance customer experience. This team emphasizes iterative development, data-driven decision-making, and cross-functional collaboration to drive continuous improvement and deliver impactful fulfillment products at a large scale.\n\nWhat you'll do:\n\nDeliver platform capabilities including infrastructure, tooling, and ML frameworks aligned with roadmap milestones and domain priorities. Apply cloud-native architecture principles to ensure scalable, resilient, and agile systems. Lead full software development lifecycle activities including coding, testing, deployment, monitoring, and maintenance. Conduct system design reviews to validate feasibility and ensure alignment with architectural best practices. Build AI-driven applications integrating ML components and automation features using multiple programming languages. Mentor engineers, influence technical decisions, and promote engineering excellence through documentation and knowledge sharing. Collaborate across teams to define technical requirements, track success metrics, and drive continuous improvement. \n\nWhat you'll bring:\n\n8- 10 years of proven expertise in cloud-native architecture, including microservices, containers, data engineering and automation for scalable and resilient systems. Strong proficiency in software design patterns, API design, and platform design and development. Experience leading full software development lifecycle activities, including coding, testing, CI/CD deployment, and maintenance. Ability to conduct system design reviews ensuring alignment with architectural best practices and project goals. Skilled in AI/ML integration using languages such as Java, Python. Demonstrated leadership in mentoring engineers and influencing technical decisions. Data-driven problem-solving skills with a focus on engineering excellence and continuous improvement. \n\nAt Walmart, we offer competitive pay as well as performance-based bonus awards and other great benefits for a happier mind, body, and wallet. Health benefits include medical, vision and dental coverage. Financial benefits include 401(k), stock purchase and company-paid life insurance. Paid time off benefits include PTO (including sick leave), parental leave, family care leave, bereavement, jury duty, and voting. Other benefits include short-term and long-term disability, company discounts, Military Leave Pay, adoption and surrogacy expense reimbursement, and more. You will also receive PTO and/or PPTO that can be used for vacation, sick leave, holidays, or other purposes. The amount you receive depends on your job classification and length of employment. It will meet or exceed the requirements of paid sick leave laws, where applicable. For information about PTO, see https://one.walmart.com/notices. Live Better U is a Walmart-paid education benefit program for full-time and part-time associates in Walmart and Sam's Club facilities. Programs range from high school completion to bachelor's degrees, including English Language Learning and short-form certificates. Tuition, books, and fees are completely paid for by Walmart.\n\nEligibility requirements apply to some benefits and may depend on your job classification and length of employment. Benefits are subject to change and may be subject to a specific plan or program terms.\n\nFor Information About Benefits And Eligibility, See One.Walmart.\n\nThe annual salary range for this position is $143,000.00 - $286,000.00 Additional compensation includes annual or quarterly performance bonuses. Additional compensation for certain positions may also include :\n\n Stock\n\nㅤ\n\nㅤ\n\nㅤ\n\nㅤ\n\n‎\n\nMinimum Qualifications...\n\nOutlined below are the required minimum qualifications for this position. If none are listed, there are no minimum qualifications. \n\nOption 1: Bachelor's degree in computer science, computer engineering, computer information systems, software engineering, or related area and 4 years’ experience in software engineering or related area.\n\nOption 2: 6 years’ experience in software engineering or related area.\n\nPreferred Qualifications...\n\nOutlined below are the optional preferred qualifications for this position. If none are listed, there are no preferred qualifications.\n\nMaster’s degree in Computer Science, Computer Engineering, Computer Information Systems, Software Engineering, or related area and 2 years' experience in software engineering or related area, We value candidates with a background in creating inclusive digital experiences, demonstrating knowledge in implementing Web Content Accessibility Guidelines (WCAG) 2.2 AA standards, assistive technologies, and integrating digital accessibility seamlessly. The ideal candidate would have knowledge of accessibility best practices and join us as we continue to create accessible products and services following Walmart’s accessibility standards and guidelines for supporting an inclusive culture.\n\nPrimary Location...\n\n1375 Crossman Ave, Sunnyvale, CA 94089-1114, United States of America\n\nWalmart and its subsidiaries are committed to maintaining a drug-free workplace and has a no tolerance policy regarding the use of illegal drugs and alcohol on the job. This policy applies to all employees and aims to create a safe and productive work environment.",
+          "easyApplyUrl": "",
+          "employmentType": "full_time",
+          "experienceLevel": "",
+          "expireUtc": 1796422611,
+          "id": "4450639827",
+          "industries": [
+            "Retail"
+          ],
+          "jobState": "LISTED",
+          "location": "Sunnyvale, CA",
+          "remote": false,
+          "salary": {
+            "max": 286000,
+            "min": 143000,
+            "text": "143,000 - 286,000 USD"
+          },
+          "state": "California",
+          "title": "Staff, Software Engineer (Backend & Data Engineering)",
+          "url": "https://www.linkedin.com/jobs/view/4450639827/",
+          "views": 0,
+          "workplaceType": "on_site"
+        },
+        {
+          "applicantTrackingSystem": "LinkedIn",
+          "applicants": 54,
+          "applyUrl": "",
+          "benefits": [],
+          "city": "San Francisco",
+          "company": {
+            "description": "Platform Recruitment - Partnering with innovative companies, connecting them with exceptional talent.\n\n\nAt Platform Recruitment we have a proven track record of delivering the best candidates into a variety of roles, working with clients that vary from new start-ups to some of the world’s largest corporations. \n\nWe take the time to fully understand our candidates and their motivations so that we can introduce them to the right companies for them. We then support them throughout their journey to finding and starting in their new job. \n\nWe partner with clients all over the UK, USA and Europe to cut out any burden the recruitment process creates for them, whether they're large multinationals or smaller start-ups. This successful partnership approach is fundamental to several exclusive agreements currently in place, with more being added every week. \n\nOur business model is based around continuously engaging with the best, most niche and in-demand technical candidates in the market. This gives us a distinct advantage when matching expert technical talent with some of the best companies in the UK, USA, Germany and across Europe.  ",
+            "employeeCount": 32,
+            "followerCount": 111497,
+            "id": "1615645",
+            "linkedinUrl": "https://www.linkedin.com/company/platform-recruitment",
+            "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQEmlflNK7ER3w/company-logo_400_400/B4EZt.P0WfHEAc-/0/1767349634930/platform_recruitment_logo?e=1794441600&v=beta&t=F2dPaoDz7iClwXSPLa3vEp4cR_Krjfs-saIplRnmKEE",
+            "name": "Platform Recruitment",
+            "universalName": "platform-recruitment",
+            "website": "http://www.platform-recruitment.com"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792583472,
+          "descriptionText": "Reinforcement Learning EngineerRemote | $125k–$225k\nMy client is a rapidly growing AI technology company building infrastructure for the next generation of AI systems. Backed by significant VC funding and working with startups, major enterprises and leading AI labs, they are looking for a Reinforcement Learning Engineer to build the products and internal tools powering their RL data platform.\nThis is a highly hands-on role where you’ll own products end-to-end, working across frontend, backend, databases, data collection, vendor workflows and observability. You don’t need to be an RL researcher, but you’ll need to be comfortable working closely with research engineers and translating ambiguous requirements into polished, production-ready software.\nThe role:Build product-facing tools for browsing environments, inspecting trajectories, reviewing task quality and debugging model behaviourDevelop workflows that allow external partners to create, submit, test and iterate on RL environments and training dataCreate dashboards and observability tools covering environment quality, evaluation results, data collection, grader issues and pipeline healthDesign backend services and APIs connecting task authoring, data collection, evaluation, QA/QC and RL training infrastructureWork closely with research, engineering, operations and commercial teams to turn complex requirements into effective productsOwn projects from initial concept through to deployment and ongoing improvement\nThe ideal candidate will have:Strong full-stack engineering experience, including Python and a modern web stack such as React, TypeScript or Next.jsExperience owning user-facing or internal products end-to-endExperienced within Refinforcement Learning specialist organisations/projectsExperience with cloud infrastructure, Docker, CI/CD, observability and production debuggingHigh agency and the ability to identify what needs to be built without relying on a perfectly defined specificationExcellent communication skills and the ability to work across engineering, research, operations and external partners\nExperience with data collection, annotation, evaluation, research tooling, developer tools, internal platforms or complex workflow products would be particularly valuable.Knowledge of AWS, Kubernetes, Terraform or Grafana is useful, but these are viewed as tools for shipping products rather than the focus of the role.\nThis is an excellent opportunity for a strong full-stack engineer with experience in AI and reinforcement learning, that offers significant ownership and the opportunity to build products that directly support cutting-edge AI development.\n",
+          "easyApplyUrl": "https://www.linkedin.com/job-apply/4479415037",
+          "employmentType": "full_time",
+          "experienceLevel": "Director",
+          "expireUtc": 1795175472,
+          "id": "4479415037",
+          "industries": [
+            "Artificial Intelligence"
+          ],
+          "jobState": "LISTED",
+          "location": "San Francisco, CA",
+          "remote": true,
+          "salary": {
+            "max": 225000,
+            "min": 125000,
+            "text": "125,000 - 225,000 USD"
+          },
+          "state": "California",
+          "title": "Reinforcement Learning Engineer",
+          "url": "https://www.linkedin.com/jobs/view/4479415037/",
+          "views": 0,
+          "workplaceType": "remote"
+        },
+        {
+          "applicantTrackingSystem": "LinkedIn",
+          "applicants": 200,
+          "applyUrl": "",
+          "benefits": [
+            "Medical insurance",
+            "Vision insurance",
+            "Dental insurance",
+            "Paid maternity leave",
+            "401(k)",
+            "Disability insurance",
+            "Commuter benefits",
+            "Student loan assistance",
+            "Child care support",
+            "Pension plan",
+            "Paid paternity leave",
+            "Tuition assistance"
+          ],
+          "city": "San Francisco",
+          "company": {
+            "description": "Harrison Clarke is the search and venture firm that builds engineering teams at VC-backed startups across three disciplines: infrastructure, software engineering, and artificial intelligence.\n\nWe partner with tier-1 venture capital firms including Sequoia, Sutter Hill Ventures, Menlo Ventures, Greylock, and NEA (amongst others) to place top talent into their portfolio companies as they grow from pre-seed stage through to pre-IPO.\n\nHiring is the foundation of what we do, but it's one part of a broader ecosystem we've built around the founders we work with.\n\nWe invest into the startups we partner with through Harrison Clarke Ventures. We connect founders with senior technical advisors through our VC network. We produce Inside the Silicon Mind, a podcast featuring the founders and investors shaping the future of technology. And we host curated dinners that bring founders together with engineering leaders, design partners, and potential customers.\n\nA founder comes to us for hiring, meets an advisor through our network, gets in front of enterprise buyers at a dinner, and tells their story on the podcast. The companies we believe in most, we invest in.",
+            "employeeCount": 18,
+            "followerCount": 86857,
+            "id": "5114934",
+            "linkedinUrl": "https://www.linkedin.com/company/harrisonclarke",
+            "logo": "https://media.licdn.com/dms/image/v2/C4E0BAQGCGvTjhDo-bA/company-logo_400_400/company-logo_400_400/0/1656672305000/harrisonclarke_logo?e=1794441600&v=beta&t=d6YdJwKIJWLeXS_f_QtjAhIde7k05FqE0WScxC5mAI8",
+            "name": "Harrison Clarke",
+            "universalName": "harrisonclarke",
+            "website": "https://www.harrisonclarke.com"
+          },
+          "country": "United States",
+          "countryCode": "US",
+          "createdUtc": 1792602967,
+          "descriptionText": "Role: Member of Technical Staff - Machine Learning EngineerLocation: San Francisco\nWe are working with a well funded frontier AI lab, currently operating in stealth, who are building agentic systems around frontier LLMs. This role blends deep ML intuition with strong systems engineering. You will join a small but elite and fast growing technical team, which offers real ownership of end-to-end outcomes and the chance to join a lab which is building the next generation of AI systems.\nThe role\nDesign, build and iterate on agent architectures: planning, tool use, routing, memory, verification, and long-horizon executionCreate evaluation loops for agent reliabilityOwn the data/knowledge layer that agents depend onImprove performance and reliabilityCollaborate with post-training and evaluation to align model behavior with the enviroments the agents run in\nWhat they're looking for\nStrong intuition for machine learning and LLM systems.Experience building and deploying LLM-powered applications or agents under real-world reliability and performance constraints.Ability to reason from first principles and debug complex, stochastic, and distributed system failures.Comfort operating across research, product, and infrastructure boundaries in fast-moving environments.Excellent software engineering fundamentals, including ownership of production-quality codebases and collaborative development practices.\nWhat is on offer: \nTop-of-market compensation + meaningful equityOwnership over high-leverage systems at the frontierStrong compute/tooling supportBenefits: medical, dental/vision, 401(k), unlimited PTO.\nIf you are interested please apply or reach out to me directly.\n",
+          "easyApplyUrl": "https://www.linkedin.com/job-apply/4476323264",
+          "employmentType": "full_time",
+          "experienceLevel": "Mid-Senior level",
+          "expireUtc": 1799075140,
+          "id": "4476323264",
+          "industries": [
+            "Staffing and Recruiting"
+          ],
+          "jobState": "LISTED",
+          "location": "San Francisco Bay Area",
+          "remote": false,
+          "salary": {
+            "max": 400000,
+            "min": 200000,
+            "text": "200,000 - 400,000 USD"
+          },
+          "state": "California",
+          "title": "Senior Machine Learning Engineer",
+          "url": "https://www.linkedin.com/jobs/view/4476323264/",
+          "views": 0,
+          "workplaceType": "on_site"
+        }
+      ],
+      "nextCursor": "cur_Pw5StPdY6RoDIqB7mxWVFA"
+    },
+    "found": true
+  },
+  "notes": [
+    "Update available: 0.1.7 → 0.1.8. Run `npm update -g @monid-ai/cli` to update monid-cli. Download the latest version of skill at https://monid.ai/SKILL.md."
+  ]
+}

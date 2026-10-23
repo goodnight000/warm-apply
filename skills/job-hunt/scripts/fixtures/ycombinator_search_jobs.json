@@ -1,0 +1,43 @@
+{
+  "runId": "01M5GPXM0T70G172QD8SC9J3A0",
+  "provider": "ycombinator",
+  "endpoint": "/search_jobs",
+  "status": "COMPLETED",
+  "input": {
+    "queryParams": {
+      "role": "software-engineer"
+    }
+  },
+  "providerResponse": {
+    "httpStatus": 401,
+    "error": {
+      "error": "Invalid API key",
+      "status_code": 401
+    }
+  },
+  "price": {
+    "type": "PER_CALL",
+    "amount": {
+      "value": 0.01,
+      "currency": "USD"
+    }
+  },
+  "cost": {
+    "value": 0,
+    "currency": "USD"
+  },
+  "resultCount": 0,
+  "billedUnits": 0,
+  "createdAt": "2026-10-22T02:26:54.873Z",
+  "startedAt": "2026-10-22T02:26:55.131Z",
+  "completedAt": "2026-10-22T02:26:55.617Z",
+  "output": null,
+  "hints": {
+    "inspect the endpoint": "monid inspect -p ycombinator -e /search_jobs",
+    "find other endpoints": "monid discover -q '<QUERY>'",
+    "run again": "monid run -p ycombinator -e /search_jobs -i '<BODY>' --query '<QUERY_PARAMS>' --path '<PATH_PARAMS>'"
+  },
+  "notes": [
+    "Update available: 0.1.7 → 0.1.8. Run `npm update -g @monid-ai/cli` to update monid-cli. Download the latest version of skill at https://monid.ai/SKILL.md."
+  ]
+}
