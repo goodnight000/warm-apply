@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="190" viewBox="0 0 960 190" role="img" aria-label="How warm-apply works: 1 Find new jobs, 2 Filter out auto-rejects, 3 Find people who can refer you, 4 Prepare the resume, referral note and pre-filled form, 5 You review and click Submit">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b6ff5"/>
+      <stop offset="1" stop-color="#2a55d4"/>
+    </linearGradient>
+    <linearGradient id="y" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f9d55"/>
+      <stop offset="1" stop-color="#17803f"/>
+    </linearGradient>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #ffffff; }
+    .n { font-size: 13px; font-weight: 700; fill: #2a55d4; }
+    .ny { fill: #17803f; }
+    .t { font-size: 18px; font-weight: 700; }
+    .s { font-size: 12.5px; fill: #e6edff; }
+  </style>
+
+  <!-- 1 -->
+  <g transform="translate(20,15)">
+    <rect width="160" height="160" rx="16" fill="url(#g)"/>
+    <circle cx="28" cy="30" r="13" fill="#ffffff"/><text class="n" x="28" y="34.5" text-anchor="middle">1</text>
+    <text class="t" x="16" y="78">Find</text>
+    <text class="s" x="16" y="102">LinkedIn, Google Jobs,</text>
+    <text class="s" x="16" y="119">startup job boards,</text>
+    <text class="s" x="16" y="136">Hacker News</text>
+  </g>
+  <line x1="184" y1="95" x2="212" y2="95" stroke="#8b949e" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- 2 -->
+  <g transform="translate(220,15)">
+    <rect width="160" height="160" rx="16" fill="url(#g)"/>
+    <circle cx="28" cy="30" r="13" fill="#ffffff"/><text class="n" x="28" y="34.5" text-anchor="middle">2</text>
+    <text class="t" x="16" y="78">Filter</text>
+    <text class="s" x="16" y="102">Drops jobs you'd be</text>
+    <text class="s" x="16" y="119">auto-rejected from,</text>
+    <text class="s" x="16" y="136">keeps the best five</text>
+  </g>
+  <line x1="384" y1="95" x2="412" y2="95" stroke="#8b949e" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- 3 -->
+  <g transform="translate(420,15)">
+    <rect width="160" height="160" rx="16" fill="url(#g)"/>
+    <circle cx="28" cy="30" r="13" fill="#ffffff"/><text class="n" x="28" y="34.5" text-anchor="middle">3</text>
+    <text class="t" x="16" y="78">Find referrers</text>
+    <text class="s" x="16" y="102">Insiders from your</text>
+    <text class="s" x="16" y="119">school or old company,</text>
+    <text class="s" x="16" y="136">plus the recruiter</text>
+  </g>
+  <line x1="584" y1="95" x2="612" y2="95" stroke="#8b949e" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- 4 -->
+  <g transform="translate(620,15)">
+    <rect width="160" height="160" rx="16" fill="url(#g)"/>
+    <circle cx="28" cy="30" r="13" fill="#ffffff"/><text class="n" x="28" y="34.5" text-anchor="middle">4</text>
+    <text class="t" x="16" y="78">Prepare</text>
+    <text class="s" x="16" y="102">Tailored resume PDF,</text>
+    <text class="s" x="16" y="119">referral note, the real</text>
+    <text class="s" x="16" y="136">form pre-filled</text>
+  </g>
+  <line x1="784" y1="95" x2="812" y2="95" stroke="#8b949e" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- 5 -->
+  <g transform="translate(820,15)">
+    <rect width="120" height="160" rx="16" fill="url(#y)"/>
+    <circle cx="28" cy="30" r="13" fill="#ffffff"/><text class="n ny" x="28" y="34.5" text-anchor="middle">5</text>
+    <text class="t" x="16" y="78">You</text>
+    <text class="s" x="16" y="102">Send the note,</text>
+    <text class="s" x="16" y="119">check the form,</text>
+    <text class="s" x="16" y="136">click Submit</text>
+  </g>
+</svg>
