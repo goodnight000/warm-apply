@@ -626,7 +626,7 @@ class Round4(unittest.TestCase):
         script = str((HERE / "jobhunt.py").resolve())
         self.assertIn(f"'Bash(python3 {script}:*)'", out["wrapper_text"])
         self.assertIn("--permission-mode dontAsk", out["wrapper_text"])
-        self.assertIn(f"'Write(/{self.home.resolve()}/**)'", out["wrapper_text"])
+        self.assertIn(f"'Edit(/{self.home.resolve()}/**)'", out["wrapper_text"])
         self.assertIn("JH_SCHEDULED_RUN=1", out["wrapper_text"])
         self.assertNotIn(str(self.home), out["wrapper"])  # what launchd runs lives outside the folder the agent writes
         self.assertIn(str(bindir), out["unit_text"])  # launchd/cron get the folder the agent was found in

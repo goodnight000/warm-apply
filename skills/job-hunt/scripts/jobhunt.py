@@ -2594,7 +2594,7 @@ def schedule_wrapper(home, agent_bin, agent, script):
         # No MCP servers (browser control and the rest stay off); the user's settings and login still load.
         cmd = [agent_bin, "-p", prompt, "--permission-mode", "dontAsk", "--strict-mcp-config", "--allowedTools",
                f"Bash(python3 {script}:*)", "Read", "Glob", "Grep", "Skill",
-               f"Write(/{home.root}/**)", f"Edit(/{home.root}/**)"]
+               f"Edit(/{home.root}/**)"]  # Edit rules cover every file-writing tool
     else:
         # Codex needs network for Monid, which its workspace-write sandbox blocks.
         cmd = [agent_bin, "exec", "--skip-git-repo-check", "-s", "danger-full-access", "-C", str(home.root.parent), prompt]
