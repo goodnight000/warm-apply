@@ -737,6 +737,25 @@ class Round5(unittest.TestCase):
             code, out = cli(t, "set", job["id"], "--apply-url", "https://acme.dev/jobs/1")
             self.assertEqual(out["apply_url"], "https://acme.dev/jobs/1")
 
+    def test_lint_tool_check_accepts_plurals(self):
+        with tempfile.TemporaryDirectory() as t:
+            os.environ["MONID_BIN"] = str(HERE / "fake_monid.py")
+            cli(t, "init")
+            home = jobhunt.Home(t)
+            (home.root / "profile.md").write_text("Built the Payments API in Go at Stripe.\n" + "x " * 300)
+            cfg = json.loads(home.config_path.read_text()); cfg["skills"] = ["APIs", "Go"]
+            home.config_path.write_text(json.dumps(cfg))
+            job = jobhunt.blank_job(title="Backend Engineer", company="Acme", description="Go")
+            job["status"] = "shortlisted"
+            home.save_jobs({job["id"]: job})
+            folder = jobhunt.app_folder(home, job); folder.mkdir(parents=True, exist_ok=True)
+            (folder / "resume.md").write_text("# Sam\nDesigned payment APIs in Go.\n")
+            code, out = cli(t, "lint", job["id"])
+            self.assertFalse([e for e in out["errors"] if "apis" in e.lower()], out)
+            (folder / "resume.md").write_text("# Sam\nRan Kubernetes clusters.\n")
+            code, out = cli(t, "lint", job["id"])
+            self.assertTrue([e for e in out["errors"] if "kubernetes" in e], out)
+
     def test_non_latin_names_get_distinct_ids(self):
         self.assertNotEqual(jobhunt.job_key("株式会社メルカリ", "ソフトウェアエンジニア"), jobhunt.job_key("楽天グループ株式会社", "ソフトウェアエンジニア"))
 

@@ -2164,7 +2164,8 @@ def cmd_lint(home, args):
         # Tools and employers must come from the user's own facts; for a resume, the posting doesn't count.
         profile_l = profile_text.lower()
         for term in dict.fromkeys(TECH_TERMS + [k.lower() for k in cfg.get("skills") or []]):
-            pat = rf"(?<![\w.+#]){re.escape(term)}(?![\w+#])"
+            forms_ = {term, term + "s"} | ({term[:-1]} if len(term) > 3 and term.endswith("s") and not term.endswith("ss") else set())  # API / APIs
+            pat = r"(?<![\w.+#])(?:" + "|".join(re.escape(t) for t in sorted(forms_, key=len, reverse=True)) + r")(?![\w+#])"
             if re.search(pat, text, re.I) and not re.search(pat, profile_l):
                 if name == "resume.md":
                     errors.append(f"resume.md: '{term}' isn't in profile.md; don't claim tools the user hasn't confirmed")
